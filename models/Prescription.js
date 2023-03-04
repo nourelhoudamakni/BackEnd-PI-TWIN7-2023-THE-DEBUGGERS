@@ -35,7 +35,15 @@ const prescriptionSchema=new mongoose.Schema({
     Signature:{ 
         type:String, 
         required:true
-    }
+    },
+    Doctor:{
+        type:Schema.Types.ObjectId,
+        ref:"Doctor"
+    },
+    MedicalRecords:{
+        type:Schema.Types.ObjectId,
+        ref:"MedicalRecord"
+    },
 })
 const Prescription = mongoose.model('Prescription', prescriptionSchema);
 module.exports = Prescription;

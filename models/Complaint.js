@@ -10,6 +10,10 @@ const ComplaintSchema=new mongoose.Schema({
     Hospital:{
         type:Schema.Types.ObjectId,
         ref:"Hospital"
+    },
+    Patient:{
+        type:Schema.Types.ObjectId,
+        ref:"Patient"
     }
 });
 
