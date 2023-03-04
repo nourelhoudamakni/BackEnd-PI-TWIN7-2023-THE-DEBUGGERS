@@ -1,4 +1,5 @@
-const { default: mongoose, Schema } = require("mongoose");
+const mongoose=require("mongoose");
+const Schema=mongoose.Schema;
 
 const ComplaintSchema=new mongoose.Schema({
     DateofComplaint:Date,
