@@ -10,7 +10,8 @@ const ComplaintSchema=new mongoose.Schema({
     Hospital:{
         type:Schema.Types.ObjectId,
         ref:"Hospital"
-    }
+    },
+    
 });
 
 const Complaint = mongoose.model('Complaint', ComplaintSchema);
