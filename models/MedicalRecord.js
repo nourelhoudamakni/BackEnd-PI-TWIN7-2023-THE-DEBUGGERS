@@ -92,7 +92,19 @@ const  MedicalRecordSchema=new mongoose.Schema({
     treatmentPlan:{ 
         type:String, 
        // required:true
-    }
+    },
+    Doctors:[{
+        type:Schema.Types.ObjectId,
+        ref:"Doctor"
+    }],
+    Patient:{
+        type:Schema.Types.ObjectId,
+        ref:"Patient"
+    },
+    prescription:[{
+        type:Schema.Types.ObjectId,
+        ref:"Prescription"
+    }]
 })
 const MedicalRecord = mongoose.model('MedicalRecord', MedicalRecordSchema);
 module.exports = MedicalRecord;
