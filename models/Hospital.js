@@ -7,6 +7,18 @@ const HospitalSchema=new mongoose.Schema({
     Complaints:[{
         type:Schema.Types.ObjectId,
         ref:"Complaint"
+    }],
+    Administrator:{
+        type:Schema.Types.ObjectId,
+        ref:"Administrator"
+    },
+    Appointments:[{
+        type:Schema.Types.ObjectId,
+        ref:"Appointment"
+    }],
+    Hospitals:[{
+        type:Schema.Types.ObjectId,
+        ref:"Hospital"
     }]
 });
 
