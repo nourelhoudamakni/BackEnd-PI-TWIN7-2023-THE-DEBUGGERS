@@ -6,6 +6,14 @@ const ChatSchema=new mongoose.Schema({
     ReciverId:String,
     Content:String,
     Date:Date,
+    Patient:{
+        type:Schema.Types.ObjectId,
+        ref:"Patient"
+    },
+    Doctor:{
+        type:Schema.Types.ObjectId,
+        ref:"Doctor"
+    }
 });
 
 const Chat = mongoose.model('Chat', ChatSchema);
