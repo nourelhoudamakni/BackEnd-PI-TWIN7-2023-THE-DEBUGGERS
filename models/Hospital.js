@@ -16,9 +16,9 @@ const HospitalSchema=new mongoose.Schema({
         type:Schema.Types.ObjectId,
         ref:"Appointment"
     }],
-    Hospitals:[{
+    HospitalServices:[{
         type:Schema.Types.ObjectId,
-        ref:"Hospital"
+        ref:"HospitalService"
     }]
 });
 
