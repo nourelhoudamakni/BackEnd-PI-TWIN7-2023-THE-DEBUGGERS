@@ -1,9 +1,9 @@
 const mongoose=require("mongoose");
 const medicalRecord=require('../models/MedicalRecord')
 const multer = require('multer');
-const path =require('path')
+const path =require('path');
 
-
+// UPLOADS FILES USING MULTER 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, 'uploads')
@@ -16,6 +16,7 @@ const storage = multer.diskStorage({
  exports.upload = multer({ storage: storage }).single('file');
 
 //ADD MEDICAL RECORD FUNCTION 
+
 exports.addMedicalRecord = async (req, res) => {
     try {
         // Récupération des données de la requête
@@ -63,7 +64,7 @@ exports.addMedicalRecord = async (req, res) => {
         });
 
         if (req.file) {
-            newMedicalRecord.files.push(req.file.path);
+            newMedicalRecord.files.push(req.file.originalname);
         }
 
         await newMedicalRecord.save();
@@ -83,7 +84,7 @@ exports.updateMedicalRecord=async (req,res)=>{
         const updatedMedicalRecord=await medicalRecord.findByIdAndUpdate(medicalRecordId,req.body); 
         res.json(updatedMedicalRecord);
         if (req.file){ 
-            updatedMedicalRecord.files.push(req.file.path);
+            updatedMedicalRecord.files.push(req.file.originalname);
             updatedMedicalRecord.save();
         }
         
@@ -92,6 +93,31 @@ exports.updateMedicalRecord=async (req,res)=>{
     }   
 }
 
-//DELETE MEDICAL RECORD  
+//DELETE MEDICAL RECORD 
 
+exports.deleteMedicalRecord=async (req ,res)=>{ 
+    try{ 
+        const {medicalRecordId}=req.params; 
+        const deleteMedicalRecord=await medicalRecord.findByIdAndDelete(medicalRecordId); 
+        res.json(deleteMedicalRecord);
+    }catch(error) {
+        res.status(500).json(error.message);
+    }
+} 
+ 
+// DELETE FILES : 
+exports.deleteFileOfMedicalRecord=async (req,res)=>{ 
+    try{ 
+        const {fileName}=req.params;
+        console.log(fileName)
+        const {medicalRecordId}=req.params; 
+        const medicalRecordOfFile=await medicalRecord.findById(medicalRecordId);
+        const updatedFiles=medicalRecordOfFile.files.filter(file=>file!=fileName);
+        medicalRecordOfFile.files=updatedFiles; 
+        medicalRecordOfFile.save(); 
+        res.json("file deleted successfully !")
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
+}
 
