@@ -3,9 +3,10 @@ var express = require('express');
 const http=require('http');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+require("./models/MedicalRecord");
 const mongoose=require('mongoose');
 require ('dotenv').config();
-
+const medicalRecordRouter=require('./routes/medicalRecord')
 
 
 var indexRouter = require('./routes/index');
@@ -19,7 +20,7 @@ mongoose.connect(process.env.MONGO_URI,{useNewUrlParser:true})
 .then(()=>{console.log('connected to DB')})
 .catch((err)=>{console.log(err.message)});
 
-console.log()
+console.log();
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -28,6 +29,7 @@ app.use(express.static('public'));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/MedicalRecord', medicalRecordRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
