@@ -1,98 +1,90 @@
 const mongoose=require("mongoose");
 const Schema=mongoose.Schema;
 const  MedicalRecordSchema=new mongoose.Schema({ 
-    patientName:{ 
-        type:String,
-        required:true
-    },
-    patientLastName:{ 
-        type:String,
-        required:true
-    },
     gender:{
         type:String, 
         enum:['MALE','FEMALE'],
-        required:true
+        //required:true
     }, 
     email:{ 
         type:String,
-        required:true
+       // required:true
     },
     country:{ 
         type:String, 
         enum:["Tunisie","algeria"],
-        required:true 
+       // required:true 
     },
     profession:{ 
         type:String, 
-        required:true,
+      //  required:true,
     },
     civilState:{ 
         type:String, 
         enum:["MARRIED","SINGLE","DIVORCED"],
-        required:true
+        //required:true
     }, 
     numberOfChildren:{  
         type :Number , 
-        required:true
+       // required:true
     },
     dateOfBirth:{ 
         type:Date , 
-        required:true
+       // required:true
     },
     placeOfBirth:{ 
         type:String, 
         enum:["Tunis","Bizerte"], 
-        required:true
+        //required:true
     },
     bloodGroups:{ 
         type:String, 
         enum:["A","B","AB","O"], 
-        required:true
+       // required:true
     },
     weight:{ 
         type:Number, 
-        required:true
+       // required:true
 
     },
     size:{
         type:Number, 
-        required:true
+       // required:true
     }, 
     arterialPressure:{ 
         type:Number, 
-        required:true
+      //  required:true
     },
     category:{ 
         type:String, 
         enum:["Temperature","Blood pressure","Heart rate","Respiratory rate","Oxygen_saturation","Pain"], 
-        required:true
+       // required:true
     },
     disease:{ 
         type:String, 
         enum:["Hypertension","Hypotension","Fever","Tachycardia","Bradycardia","Respiratory diseases","Pain"],
-        required:true
+       // required:true
     },
     allergies:{ 
         type:String, 
         enum:["Anaphylaxis","Asthma","Allergic rhinitis","Food allergies"],
-        required:true
+      //  required:true
     },
     files:{ 
         type:[String],
-        required:true
+      //  required:true
     },
     phoneNumber:{ 
         type:String, 
-        required:true
+        //required:true
     },
     lastDoctorProvider:{ 
         type:String,
-        required:true
+       // required:true
     },
     treatmentPlan:{ 
         type:String, 
-        required:true
+        //required:true
     },
     Doctors:[{
         type:Schema.Types.ObjectId,
