@@ -16,8 +16,11 @@ const userSchema=new mongoose.Schema({
     confirmPassword:String,
     role:{
         type:String,
-        enum:['Doctor','Patient'],
-        default:'Patient'
+        enum:['Doctor','Patient']
+    },
+    confirmed:{
+        type:Boolean,
+        defaultValue:false,
     }
 })
 
