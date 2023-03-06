@@ -114,7 +114,7 @@ exports.deleteFileOfMedicalRecord=async (req,res)=>{
         const medicalRecordOfFile=await medicalRecord.findById(medicalRecordId);
         const updatedFiles=medicalRecordOfFile.files.filter(file=>file!=fileName);
         medicalRecordOfFile.files=updatedFiles; 
-        medicalRecordOfFile.save(); 
+        medicalRecordOfFile.save();       
         res.json("file deleted successfully !")
     } catch (error) {
         res.status(500).json(error.message);
