@@ -3,14 +3,14 @@ var express = require('express');
 const http=require('http');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+require("./models/MedicalRecord");
 const mongoose=require('mongoose');
 require ('dotenv').config();
-
+const medicalRecordRouter=require('./routes/medicalRecord')
 
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var singUpRouter= require('./routes/signUp');
 
 var app = express();
 
@@ -20,7 +20,7 @@ mongoose.connect(process.env.MONGO_URI,{useNewUrlParser:true})
 .then(()=>{console.log('connected to DB')})
 .catch((err)=>{console.log(err.message)});
 
-console.log()
+console.log();
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -29,7 +29,7 @@ app.use(express.static('public'));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/singup',singUpRouter);
+app.use('/MedicalRecord', medicalRecordRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -44,7 +44,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.json(err.message);
+  res.json(error.message);
 });
 
 //creation du serveur
