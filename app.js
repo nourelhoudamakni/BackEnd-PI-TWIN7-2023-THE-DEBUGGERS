@@ -10,6 +10,7 @@ require ('dotenv').config();
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var singUpRouter= require('./routes/signUp');
 
 var app = express();
 
@@ -28,6 +29,7 @@ app.use(express.static('public'));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/singup',singUpRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -42,7 +44,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.json(error.message);
+  res.json(err.message);
 });
 
 //creation du serveur
