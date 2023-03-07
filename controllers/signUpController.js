@@ -134,22 +134,15 @@ const signUpFunction=async(req, res) => {
                 }
 
       // Construct email verification URL
-    const url = `http://localhost:5000/api/auth/email/confirmation/${emailToken}`;
+    const url = `http://localhost:5000/signup/${emailToken}`;
 
     // Send email verification link to patient
     transporter.sendMail({
       to: email,
       subject: 'Confirm Email',
-      html: `Please click this email to confirm your email: <a href="${url}">${url}</a>`,
+      html: `Please click this link to confirm your email: <a href="${url}">${url}</a>`,
     });
    
-
-
-              if(!Patient.confirmed){
-                res.json({
-                    message: 'Please confirm your email!'
-                })
-              } else{
               newPatient
                 .save()
                 .then((result) => {
@@ -166,7 +159,7 @@ const signUpFunction=async(req, res) => {
                     message: 'An error occurred while saving user account' + err.message,
                   });
                 });
-        }})
+        })
             .catch((err) => {
               res.json({
                 status: 'FAILED',
@@ -211,7 +204,36 @@ const signUpFunction=async(req, res) => {
                 email,
                 password: hashedPasswords,
                 dateOfBirth,
+                confirmed:false,
+                IsValidated:false,
               });
+
+              //email verification
+               // Generate email verification token
+               try {
+                var emailToken = jwt.sign(
+                    {
+                      user: _.pick(newDoctor, 'id'),
+                    },
+                    EMAIL_SECRET,
+                    {
+                      expiresIn: '1d',
+                    }
+                  );
+            } catch (error) {
+                res.json(error.message);
+            }
+
+  // Construct email verification URL
+const url = `http://localhost:5000/signup/${emailToken}`;
+
+// Send email verification link to patient
+transporter.sendMail({
+  to: email,
+  subject: 'Confirm Email',
+  html: `Please click this link to confirm your email: <a href="${url}">${url}</a>`,
+});
+              
               newDoctor
                 .save()
                 .then((result) => {
