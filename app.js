@@ -11,7 +11,7 @@ const medicalRecordRouter=require('./routes/medicalRecord')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-
+var serviceRouter = require ('./routes/service');
 var app = express();
 
 //connection to db
@@ -30,6 +30,7 @@ app.use(express.static('public'));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/MedicalRecord', medicalRecordRouter);
+app.use('/service', serviceRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -44,7 +45,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.json(error.message);
+  res.json(err.message);
 });
 
 //creation du serveur
