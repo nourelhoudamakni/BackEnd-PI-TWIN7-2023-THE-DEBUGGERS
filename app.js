@@ -2,15 +2,12 @@ var createError = require('http-errors');
 var express = require('express');
 const http=require('http');
 var cookieParser = require('cookie-parser');
+const jwt=require('jsonwebtoken')
 var logger = require('morgan');
 const mongoose=require('mongoose');
+var authRoutes = require('./routes/authRoutes');
+const { requireAuth } = require('./middlewares/authMiddleware');
 require ('dotenv').config();
-
-
-
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-
 var app = express();
 
 //connection to db
@@ -25,9 +22,33 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static('public'));
+app.set('view engine', 'ejs');
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+
+app.get('/', (req, res) => res.send('Home Page')); //just pour les interface
+app.get('/doctor', requireAuth, (req, res) => {
+  if (req.userRole !== 'Doctor') {
+    res.send('Home Page');
+  } else {
+    res.send('Doctor Space');
+  }
+});
+app.get('/patient', requireAuth, (req, res) => {
+  if (req.userRole !== 'Patient') {
+    res.send('Home Page');
+  } else {
+    res.send('Patient Space');
+  }
+});
+app.get('/admin', requireAuth, (req, res) => {
+  if (req.userRole !== 'Admin') {
+    res.send('Home Page');
+  } else {
+    res.send('Admin Space');
+  }
+});
+
+app.use(authRoutes);  //pour appellé les methode dans authRoutes
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -50,5 +71,3 @@ const server=http.createServer(app);
 server.listen(5000,()=>{
   console.log("app is running on port 5000");
 })
-
-
