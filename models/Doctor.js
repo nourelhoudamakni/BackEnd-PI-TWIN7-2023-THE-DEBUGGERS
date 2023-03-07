@@ -7,6 +7,10 @@ const DoctorSchema = new mongoose.Schema({
     WorkTime:{
     type:[Date]     
     },
+    IsValidated:{
+      type:Boolean,
+      defaultValue:false
+    },
     Patients:[{
       type:Schema.Types.ObjectId,
       ref:"Patient"
