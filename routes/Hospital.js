@@ -1,6 +1,6 @@
 const express= require("express");
 const router= express.Router();
-const {validateHospital}=require("../middlewares/hospitalValidator");
+const {validateHospital,validateHospitalwhenUpdate}=require("../middlewares/hospitalValidator");
 const
 {
     addHospitalWithAdmin,
@@ -15,7 +15,7 @@ const
 router.post('/addHospitalwithAdmin',validateHospital,addHospitalWithAdmin)
 router.get('/getAllHospitals',getAllHospitals)
 router.get('/getHospitalById/:hospitalId',getHospitalById)
-router.put('/updateHospital/:hospitalId',validateHospital,updateHospital)
+router.put('/updateHospital/:hospitalId',validateHospitalwhenUpdate,updateHospital)
 router.delete('/deleteHospital/:hospitalId',deleteHospital)
 
 module.exports=router;

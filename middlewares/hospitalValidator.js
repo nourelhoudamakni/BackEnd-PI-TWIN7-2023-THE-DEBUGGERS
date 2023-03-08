@@ -9,8 +9,8 @@ async function validateHospital(req,res,next)
       const hospitalschema = yup.object().shape({
         AdminEmail: yup
           .string()
-          .email('Email address format is invalid' )
-          .matches(/^Admin\.[a-zA-Z0-9]+@gmail\.com$/, 'Email address invalid')
+          .email('you must use email format' )
+          .matches(/^Admin\.[a-zA-Z0-9]+@gmail\.com$/, 'Email address invalid you must have this format Admin+hospitalname(number)+@gmail.com')
           .test('unique','email already exist!', async function(value) {
             if (!value) return true;
             try {
@@ -24,17 +24,17 @@ async function validateHospital(req,res,next)
           .required('email is required'),
       
         HospitalName:yup.string().required('hospital name is required'),
-        HospitalAddress:yup.string().required(' Hospital Address name is required'),
+        HospitalAddress:yup.string().required(' Hospital Address  is required'),
         PhoneNumber:yup.number().min(8, 'The phone number must contain at least 8 characters').required(' phone number  is required'),
       
         PasswordAdmin:yup
           .string()
-          .min(8, 'Le mot de passe doit contenir au moins 8 caractères')
+          .min(8, 'The password must contain at least 8 characters')
           .matches(
             /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+])(?=.{8,})/,
-            'Le mot de passe doit contenir au moins une minuscule, une majuscule, un chiffre et un caractère spécial'
+            'The password must contain at least one lowercase, one uppercase, one number and one special character'
           )
-          .required('Le mot de passe est obligatoire')
+          .required('password is required ')
       });
 
     
@@ -64,4 +64,60 @@ async function validateHospital(req,res,next)
       //   res.status(400).json({ errors });
       // }
 }
-module.exports={validateHospital}
+
+async function validateHospitalwhenUpdate(req,res,next)
+{
+  try {
+      const hospitalschema = yup.object().shape({
+        AdminEmail: yup
+          .string()
+          .email('you must use email format' )
+          .matches(/^Admin\.[a-zA-Z0-9]+@gmail\.com$/, 'Email address invalid you must have this format Admin+hospitalname(number)+@gmail.com')
+          .test('unique', 'Email address already exists', async function (value) {
+            if (!value) return true;
+            const existingHospital = await HospitalModel.findOne({ AdminEmail: value });
+            if (existingHospital) {
+              // Check if email was changed
+              if (this.parent.AdminEmail === existingHospital.AdminEmail) {
+                return true;
+              }
+              // If updating an existing record, allow the existing record's email address
+              if (this.parent.isUpdate && existingHospital._id.equals(this.parent.id)) {
+                return true;
+              }
+              return false;
+            }
+            return true;
+          })
+          .required('email is required'),
+      
+        HospitalName:yup.string().required('hospital name is required'),
+        HospitalAddress:yup.string().required(' Hospital Address  is required'),
+        PhoneNumber:yup.number().min(8, 'The phone number must contain at least 8 characters').required(' phone number  is required'),
+      
+        PasswordAdmin:yup
+          .string()
+          .min(8, 'The password  must contain at least 8 characters')
+          .matches(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+])(?=.{8,})/,
+            'The password must contain at least one lowercase, one uppercase, one number and one special character'
+          )
+          .required('password is required')
+      });
+
+    
+        await hospitalschema.validate(req.body, { abortEarly: false });
+        next();
+      }
+
+      
+      catch (error) {
+        res.status(500).json({ message: error.message, errors: error.errors });
+      }
+  
+}
+
+
+
+
+module.exports={validateHospital,validateHospitalwhenUpdate}

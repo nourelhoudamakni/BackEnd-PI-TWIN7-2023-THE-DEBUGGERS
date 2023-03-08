@@ -7,12 +7,13 @@ const addHospitalWithAdmin = async (req, res, next) => {
     try {
         const { AdminEmail, PasswordAdmin, confirmPasswordAdmin, HospitalName, HospitalAddress, PhoneNumber } = req.body
 
+        /////verifier si les parametres sont presents dans req.body
+        if (!AdminEmail || !PasswordAdmin ||  !confirmPasswordAdmin || !HospitalName || !HospitalAddress || !PhoneNumber) {
+            return res.status(400).json({ message: "Missing required fields" });
+        }
 
-        // if (!AdminEmail || !PasswordAdmin || !confirmPasswordAdmin || !HospitalName || !HospitalAddress || !PhoneNumber) {
-        //     throw new Error("please verify your entries!");
-        // }
         if (PasswordAdmin != confirmPasswordAdmin) {
-            throw new Error("Wrong password confirmation!")
+            return res.status(400).json({ message: "Wrong password confirmation !" });
         }
 
         else {
@@ -28,7 +29,8 @@ const addHospitalWithAdmin = async (req, res, next) => {
                     });
 
                     if (!newHospital) {
-                        throw new Error("error while adding Hospital in the DB!");
+
+                        return res.status(400).json({ message: "error while adding Hospital in the DB!" });
                     }
                 })
         }
@@ -39,10 +41,7 @@ const addHospitalWithAdmin = async (req, res, next) => {
     }
 }
 
-// async function findHospitalByEmail(email){
-// const hospital= await HospitalModel.findOne({AdminEmail:email})
-// return hospital;
-// }
+
 
 
 const getAllHospitals = async (req, res, next) => {
@@ -50,10 +49,10 @@ const getAllHospitals = async (req, res, next) => {
 
         const hospitals = await HospitalModel.find();
         if (!hospitals) {
-            throw new Error("hospitals not found ! ");
+            return res.status(404).json({ message: "Hospitals not found" });
         }
         if (hospitals.length === 0) {
-            throw new Error("list of hospitals is empty ! ");
+            return res.status(404).json({ message: "Hlist of hospitals is empty !" });
         }
         res.status(200).json(hospitals);
 
@@ -67,7 +66,7 @@ const getHospitalById = async (req, res, next) => {
         const { hospitalId } = req.params
         const hospital = await HospitalModel.findById(hospitalId)
         if (!hospital) {
-            throw new Error("hospital not found ! ");
+            return res.status(404).json({ message: "Hospital not found" });
         }
         res.status(200).json(hospital);
     }
@@ -83,39 +82,42 @@ const updateHospital = async (req, res, next) => {
         const { AdminEmail, OldPasswordAdmin, PasswordAdmin, confirmPasswordAdmin, HospitalName, HospitalAddress, PhoneNumber } = req.body;
 
 
-        const Hospital = await HospitalModel.findById(hospitalId)
-        if (!Hospital) {
-            throw new Error("hospital not found ! ");
+
+        /////verifier si les parametres sont presents dans req.body
+        if (!AdminEmail || !OldPasswordAdmin || !PasswordAdmin || !confirmPasswordAdmin || !HospitalName || !HospitalAddress || !PhoneNumber) {
+            return res.status(400).json({ message: "Missing required fields" });
         }
 
-        bcrypt.compare(OldPasswordAdmin,Hospital.PasswordAdmin )
-        .then((result) => {
-            if (result) {
-                if (PasswordAdmin != confirmPasswordAdmin) {
-                    throw new Error("Wrong password confirmation !");
-                }
-                else {
-                     HospitalModel.findByIdAndUpdate(
-                        hospitalId,
-                        {
-                            $set: { AdminEmail,PasswordAdmin, HospitalName, HospitalAddress, PhoneNumber },
-                        },
-                        { new: true }
-            
-                    )
-                        .then((data) => {
-                            if (!data) {
-                                res.status(404).json(` Hospital not found with id ${hospitalId}`);
-                            }
-                            res.status(200).json(data);
-                        })
-                }
-                }
-            else 
+        const Hospital = await HospitalModel.findById(hospitalId)
+        if (!Hospital) {
+            return res.status(404).json({ message: "hospistal not found !" });
+        }
+
+        const isOldPasswordCorrect = await bcrypt.compare(OldPasswordAdmin, Hospital.PasswordAdmin);
+        if (!isOldPasswordCorrect) {
+            return res.status(401).json({ message: "Incorrect old password !" });
+        }
+
+
+        if (PasswordAdmin !== confirmPasswordAdmin) {
+            return res.status(400).json({ message: "Wrong password confirmation !" });
+        }
+
+
+
+        const updateHospital = await HospitalModel.findByIdAndUpdate(
+            hospitalId,
             {
-                throw new Error("verify your old password ! ");
-            }
-        })
+                $set: { AdminEmail, PasswordAdmin, HospitalName, HospitalAddress, PhoneNumber },
+            },
+            { new: true }
+
+        )
+        if (!updateHospital) {
+            return res.status(400).json({ message: `Hospital not found with id ${hospitalId}` });
+        }
+
+        res.status(200).json(updateHospital);
     }
     catch (error) {
         res.status(500).json(error.message);
@@ -130,14 +132,18 @@ const deleteHospital = async (req, res, next) => {
     const { hospitalId } = req.params;
     try {
         if (!hospitalId) {
-            throw new Error("verify your entries ! ");
+            return res.status(400).json({ message: "Missing required field" });
         }
-        await HospitalModel.findByIdAndDelete(hospitalId)
-            .then((data) => {
-                if (!data) {
-                    res.status(404).json(` Hospital not found with id ${hospitalId}`);
-                }
-            })
+
+        const HospitalToDelte = await HospitalModel.findById(hospitalId);
+        if (!HospitalToDelte) {
+            return res.status(404).json({ message: "Hospital not found" });
+        }
+
+        const Hospital = await HospitalModel.findByIdAndDelete(hospitalId)
+        if (!Hospital) {
+            return res.status(400).json({ message: `Hospital not found with id ${hospitalId}` });
+        }
         res.status(200).json("Hospital deleted successfully! ")
     }
     catch (error) {
