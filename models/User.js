@@ -15,7 +15,7 @@ const userSchema=new mongoose.Schema({
     confirmPassword:String,
     role:{
         type:String,
-        enum:['Doctor','Patient']
+        enum:['doctor','patient']
     },
     confirmed:{
         type:Boolean,

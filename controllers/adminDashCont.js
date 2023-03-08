@@ -4,7 +4,7 @@ const UserModel = require('../models/User');
 
 const getDoctorsConfirmedValidated = async (req, res, next) => {
   try {
-    const confirmedValidatedDoctors  = await DoctorModel.find({  confirmed: true, IsValidated: true  });
+    const confirmedValidatedDoctors  = await UserModel.find({  confirmed: true, IsValidated: true , "role": "doctor" });
     res.status(200).json(confirmedValidatedDoctors);
   } catch (err) {
     console.error(err);
@@ -14,7 +14,7 @@ const getDoctorsConfirmedValidated = async (req, res, next) => {
 
 const getDoctorsConfirmedNonValidated = async (req, res, next) => {
     try {
-      const confirmedNonValidatedDoctors  = await DoctorModel.find({  confirmed: true, IsValidated: false  });
+      const confirmedNonValidatedDoctors  = await UserModel.find({  confirmed: true, IsValidated: false ,  "role": "doctor" });
       res.status(200).json(confirmedNonValidatedDoctors);
     } catch (err) {
       console.error(err);
@@ -24,12 +24,14 @@ const getDoctorsConfirmedNonValidated = async (req, res, next) => {
 
   const validateDoctor = async (req, res, next) => {
     try {
-        const doctorId = req.params.id;
-        const updatedDoctor = await DoctorModel.findByIdAndUpdate(
-          doctorId,
+        const {doctorId }= req.params;
+        const trimmedDoctorId = doctorId.trim();
+        const updatedDoctor = await UserModel.findByIdAndUpdate(
+          trimmedDoctorId,
           { isValidated: true },
           { new: true }
         );
+        console.log(trimmedDoctorId);
         if (!updatedDoctor) {
           return res.status(404).json({ message: "Doctor not found" });
         }
@@ -43,7 +45,7 @@ const getDoctorsConfirmedNonValidated = async (req, res, next) => {
     
     const getConfirmedPatients = async (req, res, next) => {
         try {
-          const confirmedPatients = await PatientModel.find({ confirmed: true });
+          const confirmedPatients = await UserModel.find({ confirmed: true , "role": "patient"});
           res.status(200).json(confirmedPatients);
         } catch (err) {
           console.error(err);
@@ -54,11 +56,11 @@ const getDoctorsConfirmedNonValidated = async (req, res, next) => {
       const getPatientByName = async (req, res, next) => {
         const { name } = req.params;
         try {
-          const patients = await PatientModel.find({
+          const patients = await UserModel.find({
             $or: [
               { firstName: { $regex: name, $options: 'i' } },
               { lastName: { $regex: name, $options: 'i' } },
-            ],
+            ], "role": "patient"
           });
           res.status(200).json(patients);
         } catch (err) {

@@ -62,8 +62,18 @@ const updateService = async (req, res, next) => {
       }
   };
   
+  const getallServices = async (req, res, next) => {
+    try {
+      const servs  = await HospitalServiceModel.find({ });
+      res.status(200).json(servs);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Server error" });
+    }
+  };
 module.exports = {
     addService,
     updateService,
-    deleteService
+    deleteService,
+    getallServices
   };
