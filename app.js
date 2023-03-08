@@ -9,6 +9,14 @@ var authRoutes = require('./routes/authRoutes');
 const { requireAuth } = require('./middlewares/authMiddleware');
 const { requireAuthAdmin } = require('./middlewares/authMiddleware');
 require ('dotenv').config();
+
+var medicalRecordRouter=require('./routes/medicalRecord');
+const signUpRouter=require('./routes/signUp');
+var HospitalRouter=require('./routes/Hospital');
+
+
+
+
 var app = express();
 
 //connection to db
@@ -42,7 +50,13 @@ app.get('/patient', requireAuth, (req, res) => {
   }
 });
 app.get('/admin',requireAuthAdmin,(req,res)=>res.send('Admin Space'));
+
+/////les paths des routes 
 app.use(authRoutes);  //pour appellé les methode dans authRoutes
+app.use('/signup',signUpRouter);
+app.use('/MedicalRecord', medicalRecordRouter);
+app.use('/hospital',HospitalRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
