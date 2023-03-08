@@ -1,7 +1,9 @@
 const mongoose=require("mongoose");
-const medicalRecord=require('../models/MedicalRecord')
+const medicalRecord=require('../models/MedicalRecord');
 const multer = require('multer');
 const path =require('path');
+const user=require('../models/User'); 
+const bcrypt = require('bcrypt');
 
 // UPLOADS FILES USING MULTER 
 const storage = multer.diskStorage({
@@ -121,3 +123,65 @@ exports.deleteFileOfMedicalRecord=async (req,res)=>{
     }
 }
 
+//update patient profile 
+exports.updatePatient=async(req,res)=>{ 
+try{ 
+    const {patientId}=req.params; 
+    const updatePatient=await user.findByIdAndUpdate(patientId,req.body)
+    res.json(updatePatient);
+    
+}catch(error){
+    res.status(500).json(error.message); 
+}
+}
+
+
+//update Doctors profile 
+exports.updateDoctor=async(req,res)=>{ 
+    try{ 
+        const {doctorId}=req.params; 
+        const updateDoctor=await user.findByIdAndUpdate(doctorId,req.body);
+        res.json(updateDoctor);
+    }catch(error){
+        res.status(500).json(error.message); 
+    }
+}
+//updateUserPassword 
+exports.updateUserPassword=async(req,res)=>{ 
+    try{
+        const oldPassword=req.body.oldPassword; 
+        const userId=req.params; 
+        const newPassword=req.body.newPassword; 
+        const confirmNewPassword=req.body.confirmNewPassword; 
+        const updatedUser=await user.findById(userId); 
+        bcrypt.compare(oldPassword,updatedUser.password).then((match)=>{ 
+            if (!match){ 
+                res.status(400).json({error:"Wrong password !"})
+              }else{ 
+                if(newPassword==confirmNewPassword){ 
+                   bcrypt.hash(newPassword,10).then((hashedNewPassword)=>{ 
+                    updatedUser.password=hashedNewPassword 
+                    res.json("password updated ! ")
+                   })
+                }else{ 
+                    res.status(400).json({error:"wrong confirm password"})
+              }
+              }
+        })
+
+    }catch(err){ 
+        res.status(500).json(err.message);
+    }
+}
+
+//PatientList 
+
+exports.patientList=async(req,res)=>{  
+    try{ 
+    const patientList =await user.find({role:'Patient'});
+    res.json(patientList) 
+    }catch(error){
+      res.status(500).json(error.message); 
+    }
+}
+    
