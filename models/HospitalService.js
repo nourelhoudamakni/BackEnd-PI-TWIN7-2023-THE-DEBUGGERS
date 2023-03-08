@@ -1,5 +1,8 @@
 const mongoose=require("mongoose");
 const Hospital = require("./Hospital");
+const Schema=mongoose.Schema;
+
+
 const HospitalServiceSchema=new mongoose.Schema({
     ServiceName: {
         type: String,
