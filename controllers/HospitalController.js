@@ -1,6 +1,7 @@
 const HospitalModel = require("../models/Hospital")
 const mongoose = require("mongoose")
 const bcrypt = require("bcrypt")
+const AppointmentModel = require("../models/Appointment")
 
 
 const addHospitalWithAdmin = async (req, res, next) => {
@@ -8,7 +9,7 @@ const addHospitalWithAdmin = async (req, res, next) => {
         const { AdminEmail, PasswordAdmin, confirmPasswordAdmin, HospitalName, HospitalAddress, PhoneNumber } = req.body
 
         /////verifier si les parametres sont presents dans req.body
-        if (!AdminEmail || !PasswordAdmin ||  !confirmPasswordAdmin || !HospitalName || !HospitalAddress || !PhoneNumber) {
+        if (!AdminEmail || !PasswordAdmin || !confirmPasswordAdmin || !HospitalName || !HospitalAddress || !PhoneNumber) {
             return res.status(400).json({ message: "Missing required fields" });
         }
 
@@ -105,16 +106,18 @@ const updateHospital = async (req, res, next) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPasswordAdmin = await bcrypt.hash(PasswordAdmin, salt);
 
-         
+
 
         const updateHospital = await HospitalModel.findByIdAndUpdate(
             hospitalId,
             {
-                $set: { AdminEmail,
-                       PasswordAdmin:hashedPasswordAdmin,
-                       HospitalName, 
-                       HospitalAddress, 
-                       PhoneNumber },
+                $set: {
+                    AdminEmail,
+                    PasswordAdmin: hashedPasswordAdmin,
+                    HospitalName,
+                    HospitalAddress,
+                    PhoneNumber
+                },
             },
             { new: true }
 
@@ -159,12 +162,123 @@ const deleteHospital = async (req, res, next) => {
 
 
 
+async function searchByHospitalName(req, res, next) {
+    try {
+        const { nameHospital } = req.params;
+        if (!nameHospital) {
+            return res.status(400).json({ message: "Missing required fields" });
+        }
+
+        const hospitals = await HospitalModel.find({ HospitalName: { $regex: new RegExp(nameHospital, 'i') } })
+
+
+        if (!hospitals) {
+            return res.status(404).json({ message: "Hospitals not found" });
+        }
+        if (hospitals.length === 0) {
+            return res.status(404).json({ message: "list of hospitals is empty !" });
+        }
+        res.status(200).json(hospitals);
+
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
+}
+
+async function calculerNbrHopitaux(req, res, next) {
+    try {
+        const count = await HospitalModel.countDocuments({});
+        res.json({ count: count });
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
+};
+
+
+async function countCompalintsByHospital(req, res, next) {
+    try {
+        const aggResult = await HospitalModel.aggregate([
+            {
+                $lookup: {
+                    from: 'Complaint',
+                    localField: 'Complaints',
+                    foreignField: '_id',
+                    as: 'complaints',
+                }
+            },
+            {
+                $unwind: '$complaints'
+            },
+            {
+                $group: {
+                    _id: '$_id',
+                    count: { $sum: 1 },
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    hospital: '$_id',
+                    nbrcomplaints: '$count'
+
+                }
+            },
+        ]);
+        res.json(aggResult);
+    }
+    catch (error) {
+        res.status(500).json(error.message);
+    }
+
+}
+
+async function hospitalAvecPlusDeRendezVous(req, res, next) {
+    try {
+        const results = await AppointmentModel.aggregate([
+            { $group: { _id: '$hospitalId', totalAppointments: { $sum: 1 } } },
+            { $sort: { totalAppointments: -1 } },
+            { $limit: 10 },
+            {
+                $lookup: {
+                    from: 'Hospital',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'hospital'
+                }
+            },
+            {
+                $unwind: '$hospital'
+            },
+            {
+                $project: {
+                    'hospital._id': 0
+                }
+            }
+        ]).exec();
+        res.json(results);
+    }
+    catch (error) {
+        res.status(500).json(error.message);
+    }
+}
+
+
+
+
+
+
+
+
 module.exports = {
     addHospitalWithAdmin,
     updateHospital,
     deleteHospital,
     getAllHospitals,
     getHospitalById,
+    calculerNbrHopitaux,
+    countCompalintsByHospital,
+    hospitalAvecPlusDeRendezVous,
+    searchByHospitalName,
 
 }
 
