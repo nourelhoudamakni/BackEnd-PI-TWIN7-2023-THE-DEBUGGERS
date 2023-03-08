@@ -32,5 +32,24 @@ const requireAuth=(req,res,next)=>{
         res.send('Login Page');
     }
 }
+const requireAuthAdmin=(req,res,next)=>{
+  const token=req.cookies.jwt;
 
-module.exports={requireAuth};
+  //check json web tocken exists & is verified
+  if(token){
+      jwt.verify(token,'Admin information secret',(err,decodedToken)=>{
+          if (err) {
+              console.log(err.message);
+              res.send('Admin Login Page');
+            } else {
+              console.log(decodedToken);
+              next();
+            }
+          });
+  }
+  else{
+      res.send('Admin Login Page');
+  }
+}
+
+module.exports={requireAuth,requireAuthAdmin};

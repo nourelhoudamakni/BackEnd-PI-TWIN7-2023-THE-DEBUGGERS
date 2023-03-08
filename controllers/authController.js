@@ -1,5 +1,6 @@
 const { response } = require("express");
 const User=require("../models/User");
+const Hospital=require("../models/Hospital");
 const jwt = require('jsonwebtoken');
 const nodemailer=require('nodemailer');
 const randomstring=require("randomstring");
@@ -35,6 +36,34 @@ const handleErrors=(err)=>{
     return errors;
 }
 
+const handleErrorsAdmin=(err)=>{
+    console.log(err.message,err.code)
+    let errors={AdminEmail:'',PasswordAdmin:''}
+
+    //incorrect email
+    if(err.message==='incorrect email'){              //message li yben f terminal
+        errors.AdminEmail="that email is not registred"    //message li yben tahet linput
+    }
+
+    //incorrect password
+    if(err.message==='incorrect password'){
+        errors.PasswordAdmin="that password is incorrect";
+    }
+
+    //duplicatee email error code
+    if (err.code===11000){             //11000:code de error unique email
+        errors.AdminEmail="that email is already registred";
+        return errors
+    }
+    //validation errors
+    if(err.message.includes('User validation failed')){
+        Object.values(err.errors).forEach(({properties})=>{
+            errors[properties.path]=properties.message;
+        })
+    }
+    return errors;
+}
+
 
 // create json web token
 const maxAge= 3 * 24 * 60 * 60  //3days with seconds
@@ -42,6 +71,12 @@ const maxAge= 3 * 24 * 60 * 60  //3days with seconds
 //function createToken the encoded data here is the id
 const createToken = (id,role)=>{
     return jwt.sign({id,role},'User information secret',{    //secret key that is used to sign the jwt (should not share)
+        expiresIn:maxAge
+    })
+}
+
+const createTokenAdmin = (id)=>{
+    return jwt.sign({id},'Admin information secret',{    //secret key that is used to sign the jwt (should not share)
         expiresIn:maxAge
     })
 }
@@ -145,13 +180,39 @@ const reset_password=async(req,res)=>{
     }
 }
 
+const loginAdmin_get=(req,res)=>{
+    res.send('Admin Login Page');
+}
+
+const loginAdmin_post=async(req,res)=>{
+    const {AdminEmail,PasswordAdmin}=req.body;
+    try{
+        const admin=await Hospital.login(AdminEmail,PasswordAdmin);
+        const token=createTokenAdmin(admin._id)
+        res.cookie('jwt',token,{httpOnly:true,maxAge:maxAge*1000})
+        res.send(`Admin Space`)
+    }
+    catch(err){
+        const errors=handleErrorsAdmin(err);
+        res.status(400).json({errors});
+    }
+}
+
+const logoutAdmin_get=async(req,res)=>{        //to change the value of the token to ''
+    res.cookie('jwt','',{maxAge:1})    //expire at 1ms
+    res.send('Home Page');
+}
+
 
 module.exports={
     login_get,
     login_post,
     logout_get,
     forget_password,
-    reset_password
+    reset_password,
+    loginAdmin_get,
+    loginAdmin_post,
+    logoutAdmin_get
 }
 
 

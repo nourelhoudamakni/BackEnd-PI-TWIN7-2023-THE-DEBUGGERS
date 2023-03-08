@@ -7,6 +7,7 @@ var logger = require('morgan');
 const mongoose=require('mongoose');
 var authRoutes = require('./routes/authRoutes');
 const { requireAuth } = require('./middlewares/authMiddleware');
+const { requireAuthAdmin } = require('./middlewares/authMiddleware');
 require ('dotenv').config();
 var app = express();
 
@@ -25,7 +26,7 @@ app.use(express.static('public'));
 app.set('view engine', 'ejs');
 
 
-app.get('/', (req, res) => res.send('Home Page')); //just pour les interface
+app.get('/', (req, res) => res.send('Home Page'));
 app.get('/doctor', requireAuth, (req, res) => {
   if (req.userRole !== 'Doctor') {
     res.send('Home Page');
@@ -40,14 +41,7 @@ app.get('/patient', requireAuth, (req, res) => {
     res.send('Patient Space');
   }
 });
-app.get('/admin', requireAuth, (req, res) => {
-  if (req.userRole !== 'Admin') {
-    res.send('Home Page');
-  } else {
-    res.send('Admin Space');
-  }
-});
-
+app.get('/admin',requireAuthAdmin,(req,res)=>res.send('Admin Space'));
 app.use(authRoutes);  //pour appellé les methode dans authRoutes
 
 // catch 404 and forward to error handler
