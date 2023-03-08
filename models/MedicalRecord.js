@@ -1,13 +1,6 @@
 const mongoose=require("mongoose");
+const Schema=mongoose.Schema;
 const  MedicalRecordSchema=new mongoose.Schema({ 
-    patientName:{ 
-        type:String,
-        //required:true
-    },
-    patientLastName:{ 
-        type:String,
-        //required:true
-    },
     gender:{
         type:String, 
         enum:['MALE','FEMALE'],
@@ -17,19 +10,19 @@ const  MedicalRecordSchema=new mongoose.Schema({
         type:String,
        // required:true
     },
-    contry:{ 
+    country:{ 
         type:String, 
         enum:["Tunisie","algeria"],
-        //required:true 
+       // required:true 
     },
     profession:{ 
         type:String, 
-       // required:true,
+      //  required:true,
     },
     civilState:{ 
         type:String, 
         enum:["MARRIED","SINGLE","DIVORCED"],
-       // required:true
+        //required:true
     }, 
     numberOfChildren:{  
         type :Number , 
@@ -40,13 +33,13 @@ const  MedicalRecordSchema=new mongoose.Schema({
        // required:true
     },
     placeOfBirth:{ 
-        type:Date, 
-        enum:["Tunis,Bizerte"], 
-       // required:true
+        type:String, 
+        enum:["Tunis","Bizerte"], 
+        //required:true
     },
     bloodGroups:{ 
         type:String, 
-        enum:[A,B,AB,O], 
+        enum:["A","B","AB","O"], 
        // required:true
     },
     weight:{ 
@@ -60,30 +53,30 @@ const  MedicalRecordSchema=new mongoose.Schema({
     }, 
     arterialPressure:{ 
         type:Number, 
-        //required:true
+      //  required:true
     },
     category:{ 
         type:String, 
-        enum:[Temperature,Blood_pressure,Heart_rate,Respiratory_rate,Oxygen_saturation,Pain], 
-        //required:true
+        enum:["Temperature","Blood pressure","Heart rate","Respiratory rate","Oxygen_saturation","Pain"], 
+       // required:true
     },
     disease:{ 
         type:String, 
-        enum:[Hypertension,Hypotension,Fever,Tachycardia,Bradycardia,Respiratory_diseases,Pain],
-        //required:true
+        enum:["Hypertension","Hypotension","Fever","Tachycardia","Bradycardia","Respiratory diseases","Pain"],
+       // required:true
     },
     allergies:{ 
         type:String, 
-        enum:[Anaphylaxis,Asthma,Allergic_rhinitis,Food_allergies],
-        //required:true
+        enum:["Anaphylaxis","Asthma","Allergic rhinitis","Food allergies"],
+      //  required:true
     },
     files:{ 
         type:[String],
-        //required:true
+      //  required:true
     },
     phoneNumber:{ 
         type:String, 
-       // required:true
+        //required:true
     },
     lastDoctorProvider:{ 
         type:String,
@@ -91,7 +84,7 @@ const  MedicalRecordSchema=new mongoose.Schema({
     },
     treatmentPlan:{ 
         type:String, 
-       // required:true
+        //required:true
     },
     Doctors:[{
         type:Schema.Types.ObjectId,
