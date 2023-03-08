@@ -11,7 +11,7 @@ const medicalRecordRouter=require('./routes/medicalRecord')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-const signUpRouter=require('./routes/signUp');
+var signUpRouter=require('./routes/signUp');
 
 var app = express();
 

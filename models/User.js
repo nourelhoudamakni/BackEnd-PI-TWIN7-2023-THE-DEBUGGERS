@@ -14,14 +14,18 @@ const userSchema=new mongoose.Schema({
     email:String,
     password:String,
     confirmPassword:String,
+    code:String,
+    phoneNotVerif:String,
     role:{
         type:String,
-        enum:['Doctor','Patient']
+        enum:['doctor','patient']
     },
     confirmed:{
         type:Boolean,
         defaultValue:false,
-    }
+    },
+},{
+    discriminatorKey: 'userType' // set discriminator key to 'userType'
 })
 
 const User = mongoose.model('User', userSchema);
