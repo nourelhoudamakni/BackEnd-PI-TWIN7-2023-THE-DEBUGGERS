@@ -1,5 +1,8 @@
 const mongoose=require("mongoose");
 const Hospital = require("./Hospital");
+const Schema=mongoose.Schema;
+
+
 const HospitalServiceSchema=new mongoose.Schema({
     ServiceName: {
         type: String,
@@ -23,5 +26,5 @@ const HospitalServiceSchema=new mongoose.Schema({
         ref:"Appointment"
     }]
 });
-const HospitalService=mongoose.Model("HospitalService",HospitalServiceSchema);
+const HospitalService=mongoose.model("HospitalService",HospitalServiceSchema);
 module.exports=HospitalService;
