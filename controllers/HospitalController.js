@@ -102,13 +102,19 @@ const updateHospital = async (req, res, next) => {
         if (PasswordAdmin !== confirmPasswordAdmin) {
             return res.status(400).json({ message: "Wrong password confirmation !" });
         }
+        const salt = await bcrypt.genSalt(10);
+        const hashedPasswordAdmin = await bcrypt.hash(PasswordAdmin, salt);
 
-
+         
 
         const updateHospital = await HospitalModel.findByIdAndUpdate(
             hospitalId,
             {
-                $set: { AdminEmail, PasswordAdmin, HospitalName, HospitalAddress, PhoneNumber },
+                $set: { AdminEmail,
+                       PasswordAdmin:hashedPasswordAdmin,
+                       HospitalName, 
+                       HospitalAddress, 
+                       PhoneNumber },
             },
             { new: true }
 
