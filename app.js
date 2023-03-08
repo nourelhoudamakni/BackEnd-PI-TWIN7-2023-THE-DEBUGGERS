@@ -13,6 +13,8 @@ require ('dotenv').config();
 var medicalRecordRouter=require('./routes/medicalRecord');
 const signUpRouter=require('./routes/signUp');
 var HospitalRouter=require('./routes/Hospital');
+var serviceRouter = require('./routes/service');
+var adminRouter = require('./routes/adminDash');
 
 
 
@@ -56,7 +58,8 @@ app.use(authRoutes);  //pour appellé les methode dans authRoutes
 app.use('/signup',signUpRouter);
 app.use('/MedicalRecord', medicalRecordRouter);
 app.use('/hospital',HospitalRouter);
-
+app.use('/service', serviceRouter);
+app.use('/admin', adminRouter );
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
