@@ -4,6 +4,7 @@ const http=require('http');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 require("./models/MedicalRecord");
+require("./models/Patient");
 const mongoose=require('mongoose');
 require ('dotenv').config();
 const medicalRecordRouter=require('./routes/medicalRecord')
@@ -12,6 +13,8 @@ const medicalRecordRouter=require('./routes/medicalRecord')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const signUpRouter=require('./routes/signUp');
+var serviceRouter = require('./routes/service');
+var adminRouter = require('./routes/adminDash')
 
 var app = express();
 
@@ -32,6 +35,8 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/signup',signUpRouter);
 app.use('/MedicalRecord', medicalRecordRouter);
+app.use('/service', serviceRouter);
+app.use('/admin', adminRouter );
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
