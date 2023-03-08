@@ -2,8 +2,32 @@ const mongoose=require("mongoose");
 const Schema=mongoose.Schema;
 
 const HospitalSchema=new mongoose.Schema({
-    HospitalName:String,
-    HospitalAddress:String,
+
+    AdminEmail: {
+        type: String,
+        required:true,
+        unique:true,
+        match: /^Admin\.[a-zA-Z0-9]+@gmail\.com$/,
+    },
+    PasswordAdmin:
+    {
+        type: String,
+        required:true,
+    },
+    HospitalName:
+    {
+        type:String,
+        required:true,
+    },
+    HospitalAddress:
+    {
+        type:String,
+        required:true,
+    },
+    PhoneNumber: {
+        type: String,
+        required:true,
+    },
     Complaints:[{
         type:Schema.Types.ObjectId,
         ref:"Complaint"
