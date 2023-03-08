@@ -1,4 +1,5 @@
 const mongoose=required("mongoose"); 
+const Schema=mongoose.Schema;
 const prescriptionSchema=new mongoose.Schema({ 
     patientName:{ 
         type:String, 
