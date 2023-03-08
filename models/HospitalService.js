@@ -23,5 +23,5 @@ const HospitalServiceSchema=new mongoose.Schema({
         ref:"Appointment"
     }]
 });
-const HospitalService=mongoose.Model("HospitalService",HospitalServiceSchema);
+const HospitalService=mongoose.model("HospitalService",HospitalServiceSchema);
 module.exports=HospitalService;

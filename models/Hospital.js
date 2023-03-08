@@ -33,10 +33,7 @@ const HospitalSchema=new mongoose.Schema({
         type:Schema.Types.ObjectId,
         ref:"Complaint"
     }],
-    Administrator:{
-        type:Schema.Types.ObjectId,
-        ref:"Administrator"
-    },
+ 
     Appointments:[{
         type:Schema.Types.ObjectId,
         ref:"Appointment"
