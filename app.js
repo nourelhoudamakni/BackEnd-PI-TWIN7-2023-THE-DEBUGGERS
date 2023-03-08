@@ -2,19 +2,20 @@ var createError = require('http-errors');
 var express = require('express');
 const http=require('http');
 var cookieParser = require('cookie-parser');
+const jwt=require('jsonwebtoken')
 var logger = require('morgan');
-require("./models/MedicalRecord");
-require("./models/Patient");
 const mongoose=require('mongoose');
+var authRoutes = require('./routes/authRoutes');
+const { requireAuth } = require('./middlewares/authMiddleware');
+const { requireAuthAdmin } = require('./middlewares/authMiddleware');
 require ('dotenv').config();
-const medicalRecordRouter=require('./routes/medicalRecord')
 
-
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var medicalRecordRouter=require('./routes/medicalRecord');
 const signUpRouter=require('./routes/signUp');
-var serviceRouter = require('./routes/service');
-var adminRouter = require('./routes/adminDash')
+var HospitalRouter=require('./routes/Hospital');
+
+
+
 
 var app = express();
 
@@ -24,19 +25,38 @@ mongoose.connect(process.env.MONGO_URI,{useNewUrlParser:true})
 .then(()=>{console.log('connected to DB')})
 .catch((err)=>{console.log(err.message)});
 
-console.log();
+console.log()
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static('public'));
+app.set('view engine', 'ejs');
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+
+app.get('/', (req, res) => res.send('Home Page'));
+app.get('/doctor', requireAuth, (req, res) => {
+  if (req.userRole !== 'Doctor') {
+    res.send('Home Page');
+  } else {
+    res.send('Doctor Space');
+  }
+});
+app.get('/patient', requireAuth, (req, res) => {
+  if (req.userRole !== 'Patient') {
+    res.send('Home Page');
+  } else {
+    res.send('Patient Space');
+  }
+});
+app.get('/admin',requireAuthAdmin,(req,res)=>res.send('Admin Space'));
+
+/////les paths des routes 
+app.use(authRoutes);  //pour appellé les methode dans authRoutes
 app.use('/signup',signUpRouter);
 app.use('/MedicalRecord', medicalRecordRouter);
-app.use('/service', serviceRouter);
-app.use('/admin', adminRouter );
+app.use('/hospital',HospitalRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -51,7 +71,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.json(err.message);
+  res.json(error.message);
 });
 
 //creation du serveur
@@ -59,5 +79,3 @@ const server=http.createServer(app);
 server.listen(5000,()=>{
   console.log("app is running on port 5000");
 })
-
-
