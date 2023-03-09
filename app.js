@@ -39,14 +39,14 @@ app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => res.send('Home Page'));
 app.get('/doctor', requireAuth, (req, res) => {
-  if (req.userRole !== 'Doctor') {
+  if (req.userRole !== 'doctor') {
     res.send('Home Page');
   } else {
     res.send('Doctor Space');
   }
 });
 app.get('/patient', requireAuth, (req, res) => {
-  if (req.userRole !== 'Patient') {
+  if (req.userRole !== 'patient') {
     res.send('Home Page');
   } else {
     res.send('Patient Space');
