@@ -31,7 +31,7 @@ const userSchema=new mongoose.Schema({
     role:{
         type:String,
         requried:true,
-        enum:['Doctor','Patient','Admin'],
+        enum:['doctor','patient'],
         default:'Patient'
     },
     confirmed:{
