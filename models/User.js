@@ -32,7 +32,7 @@ const userSchema=new mongoose.Schema({
         type:String,
         requried:true,
         enum:['doctor','patient'],
-        default:'Patient'
+        default:'patient'
     },
     confirmed:{
         type:Boolean,
