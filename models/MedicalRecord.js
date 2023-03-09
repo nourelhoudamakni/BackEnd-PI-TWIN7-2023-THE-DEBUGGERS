@@ -1,5 +1,16 @@
 const mongoose=require("mongoose");
 const Schema=mongoose.Schema;
+const request = require('request');
+let countryNames = [];
+
+// request('https://restcountries.com/v3.1/region/africa', function(error, response, body) {
+//   if (!error && response.statusCode === 200) {
+//     const countries = JSON.parse(body);
+//     countryNames = countries.map(country => country.name.common);
+//   } else {
+//     console.log(error);
+//   }
+// });
 const  MedicalRecordSchema=new mongoose.Schema({ 
     gender:{
         type:String, 
@@ -12,7 +23,7 @@ const  MedicalRecordSchema=new mongoose.Schema({
     },
     country:{ 
         type:String, 
-        enum:["Tunisie","algeria"],
+        enum:[  "Algeria",  "Angola",  "Benin",  "Botswana",  "Burkina Faso",  "Burundi",  "Cameroon",  "Cape Verde",  "Central African Republic",  "Chad",  "Comoros",  "Democratic Republic of the Congo",  "Republic of the Congo",  "Cote d'Ivoire",  "Djibouti",  "Egypt",  "Equatorial Guinea",  "Eritrea",  "Eswatini",  "Ethiopia",  "Gabon",  "Gambia",  "Ghana",  "Guinea",  "Guinea-Bissau",  "Kenya",  "Lesotho",  "Liberia",  "Libya",  "Madagascar",  "Malawi",  "Mali",  "Mauritania",  "Mauritius",  "Morocco",  "Mozambique",  "Namibia",  "Niger",  "Nigeria",  "Rwanda",  "Sao Tome and Principe",  "Senegal",  "Seychelles",  "Sierra Leone",  "Somalia",  "South Africa",  "South Sudan",  "Sudan",  "Tanzania",  "Togo",  "Tunisia",  "Uganda",  "Zambia",  "Zimbabwe"]        ,
        // required:true 
     },
     profession:{ 
