@@ -17,10 +17,6 @@ const EMAIL_SECRET = 'mysecretemail';
 
 
 router.post('/', signUpFunction);
-router.get('/patient',(req,res)=>{
-    const patient=Patient.findOne({email:"hamza.hafaiedh13+2@gmail.com"});
-    console.log(patient.userName);
-})
 
 // Endpoint for email verification
 router.get('/:token', async (req, res) => {

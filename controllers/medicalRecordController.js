@@ -5,7 +5,7 @@ const path =require('path');
 const user=require('../models/User'); 
 const bcrypt = require('bcrypt');
 const express = require('express');
-const client = require('twilio')('ACbd71f0f04eab6ff49a54a4fe7c25486b', '4de29e3bbb367c3ce9c8d45eb3e5d789');
+const client = require('twilio')('ACbd71f0f04eab6ff49a54a4fe7c25486b', '77353e4e638d0da93d91d5f3e89c78ad');
 
 
 // UPLOADS FILES USING MULTER 
