@@ -14,6 +14,8 @@ const userSchema=new mongoose.Schema({
     email:String,
     password:String,
     confirmPassword:String,
+    code:String,
+    phoneNotVerif:String,
     role:{
         type:String,
         enum:['Doctor','Patient']

@@ -4,6 +4,9 @@ const multer = require('multer');
 const path =require('path');
 const user=require('../models/User'); 
 const bcrypt = require('bcrypt');
+const express = require('express');
+const client = require('twilio')('ACbd71f0f04eab6ff49a54a4fe7c25486b', '4de29e3bbb367c3ce9c8d45eb3e5d789');
+
 
 // UPLOADS FILES USING MULTER 
 const storage = multer.diskStorage({
@@ -150,18 +153,22 @@ exports.updateDoctor=async(req,res)=>{
 exports.updateUserPassword=async(req,res)=>{ 
     try{
         const oldPassword=req.body.oldPassword; 
-        const userId=req.params; 
+        const userId=req.params.userId; 
+        console.log(userId)
         const newPassword=req.body.newPassword; 
         const confirmNewPassword=req.body.confirmNewPassword; 
-        const updatedUser=await user.findById(userId); 
+        console.log("here"); 
+        const updatedUser=await user.findById(userId);
+        console.log(updatedUser);
         bcrypt.compare(oldPassword,updatedUser.password).then((match)=>{ 
             if (!match){ 
                 res.status(400).json({error:"Wrong password !"})
               }else{ 
                 if(newPassword==confirmNewPassword){ 
                    bcrypt.hash(newPassword,10).then((hashedNewPassword)=>{ 
-                    updatedUser.password=hashedNewPassword 
+                    updatedUser.password=hashedNewPassword ;
                     res.json("password updated ! ")
+                    updatedUser.save();
                    })
                 }else{ 
                     res.status(400).json({error:"wrong confirm password"})
@@ -174,14 +181,45 @@ exports.updateUserPassword=async(req,res)=>{
     }
 }
 
-//PatientList 
 
-exports.patientList=async(req,res)=>{  
-    try{ 
-    const patientList =await user.find({role:'Patient'});
-    res.json(patientList) 
-    }catch(error){
-      res.status(500).json(error.message); 
+
+//Send : mobile verifications : 
+exports.sendSms=async(req,res)=>{ 
+    try { 
+        const phone=req.body.phone; 
+        const userId=req.params.userId;
+        console.log(userId);
+        const userNumber=await user.findById(userId);
+        userNumber.phoneNotVerif=phone;
+        const crypto = require('crypto');
+        const code = crypto.randomInt(1000000);
+        userNumber.code=code; 
+        await userNumber.save();
+        client.messages.create({ 
+            body:`Your OTP is ${code}`, 
+            from:'+15075644773',
+            to:`${phone}`
+        }).then(res.json(console.log(code)))
+    }catch(error){ 
+        res.status(500).json(error.message);
     }
 }
-    
+
+//Receive : mobile verification : 
+exports.verifNumber=async(req,res)=>{ 
+     try{ 
+        const codeEnter=req.body.codeEnter; 
+        const userId=req.params.userId;
+        const userNumber=await user.findById(userId);
+        if (userNumber.code==codeEnter){ 
+                userNumber.phoneNumber=userNumber.phoneNotVerif
+                await userNumber.save();
+                res.json(console.log("number verified !"));
+
+        }else{ 
+            res.status(400).json({error:"wrong confirm code"})
+        }
+     }catch(error){ 
+        res.status(500).json(error.message); 
+     }
+}

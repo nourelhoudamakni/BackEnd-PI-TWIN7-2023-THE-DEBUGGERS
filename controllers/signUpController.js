@@ -26,7 +26,7 @@ const transporter = nodemailer.createTransport({
 
 // signup
 const signUpFunction=async(req, res) => {
-  let { userName,firstName,lastName,gender,address,phoneNumber, email, password, dateOfBirth,role,confirmPassword } = req.body;
+  let { userName,firstName,lastName,gender,address,phoneNumber, email, password, dateOfBirth,role,confirmPassword,code,phoneNotVerif} = req.body;
   userName = userName.trim();
   firstName = firstName.trim();
   lastName = lastName.trim();
@@ -38,8 +38,9 @@ const signUpFunction=async(req, res) => {
   dateOfBirth = dateOfBirth.trim();
   role = role.trim();
   confirmPassword = confirmPassword.trim();
-
-  if (userName == '' || firstName == '' || lastName == '' || gender == '' || address == '' || phoneNumber == '' || email == '' || password == '' || dateOfBirth == '' || role=='' || confirmPassword=='') {
+  code=code.trim(); 
+  phoneNotVerif=phoneNotVerif.trim();
+  if (userName == '' || firstName == '' || lastName == '' || gender == '' || address == '' ||  email == '' || password == '' || dateOfBirth == '' || role=='' || confirmPassword=='') {
     res.json({
       status: 'FAILED',
       message: 'Empty input fields!',
@@ -94,6 +95,8 @@ const signUpFunction=async(req, res) => {
                 password: hashedPasswords,
                 dateOfBirth,
                 confirmed:false,
+                code,
+                phoneNotVerif,
               });
 
               //sending email verification with jwt before saving user
