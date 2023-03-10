@@ -11,6 +11,8 @@ const { requireAuthAdmin } = require('./middlewares/authMiddleware');
 require ('dotenv').config();
 
 var medicalRecordRouter=require('./routes/medicalRecord');
+var patientRouter=require('./routes/patientRouter');
+var doctorRouter=require('./routes/doctorRouter');
 const signUpRouter=require('./routes/signUp');
 var HospitalRouter=require('./routes/Hospital');
 var serviceRouter = require('./routes/service');
@@ -59,6 +61,8 @@ app.use('/',indexRouter)
 app.use(authRoutes);  //pour appellé les methode dans authRoutes
 app.use('/signup',signUpRouter);
 app.use('/MedicalRecord', medicalRecordRouter);
+app.use('/patient', patientRouter);
+app.use('/doctor', doctorRouter);
 app.use('/hospital',HospitalRouter);
 app.use('/service', serviceRouter);
 app.use('/admin', adminRouter );
