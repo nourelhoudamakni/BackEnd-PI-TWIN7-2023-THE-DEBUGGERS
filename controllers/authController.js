@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const nodemailer=require('nodemailer');
 const randomstring=require("randomstring");
 const bcryptjs = require('bcryptjs');
+const speakeasy=require('speakeasy');
 require ('dotenv').config();
 
 //handle errors
@@ -86,19 +87,51 @@ const login_get=(req,res)=>{
 }
 
 const login_post=async(req,res)=>{
-    const {email,password}=req.body;
+    const {email,password, secret}=req.body;
     try{
-        const user=await User.login(email,password);
+        const user=await User.login(email,password);       //login trajaa user
+        if (user.secret) {
+            if (!secret) {
+                await sendSecretByEmail(email, user.secret);
+                return res.status(200).json({ message: 'A new 2FA secret has been sent to your email' });
+            } else if (secret!= user.secret) {
+                return res.status(401).send({
+                    accessToken: null,
+                    message: "Invalid Two Factor Auth Code!",
+                });
+            }
+        }
         const token=createToken(user._id,user.role)
         res.cookie('jwt',token,{httpOnly:true,maxAge:maxAge*1000})
-        //res.status(200).json({user:user._id,role:user.role})
-        res.send(`${user.role} Space`)
+        res.status(200).json({user:user._id,role:user.role})
     }
     catch(err){
         const errors=handleErrors(err);
         res.status(400).json({errors});
     }
 }
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user:process.env.USER_EMAIL,
+        pass:process.env.USER_PASS
+    },
+  });
+
+const sendSecretByEmail = async (email, secret) => {
+    try {
+      await transporter.sendMail({
+        from: process.env.USER_EMAIL,
+        to: email,
+        subject: 'Your 2FA Secret',
+        text: `Your 2FA secret is ${secret}`,
+      });
+      console.log(`2FA secret sent to ${email}`);
+    } catch (error) {
+      console.error(`Error sending 2FA secret to ${email}:`, error);
+    }
+  };
 
 const logout_get=async(req,res)=>{        //to change the value of the token to ''
     res.cookie('jwt','',{maxAge:1})    //expire at 1ms

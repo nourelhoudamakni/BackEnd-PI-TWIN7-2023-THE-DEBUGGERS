@@ -44,7 +44,7 @@ app.use(express.static('public'));
 app.set('view engine', 'ejs');
 
 
-app.get('/', (req, res) => res.send('Home Page'));
+// app.get('/', (req, res) => res.send('Home Page'));
 app.get('/doctor', requireAuth, (req, res) => {
   if (req.userRole !== 'doctor') {
     res.send('Home Page');
@@ -62,7 +62,7 @@ app.get('/patient', requireAuth, (req, res) => {
 app.get('/admin',requireAuthAdmin,(req,res)=>res.send('Admin Space'));
 
 /////les paths des routes 
-//app.use('/',indexRouter)
+app.use('/',indexRouter)
 app.use(authRoutes);  //pour appellé les methode dans authRoutes
 app.use('/signup',signUpRouter);
 app.use('/MedicalRecord', medicalRecordRouter);
