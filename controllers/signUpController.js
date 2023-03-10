@@ -174,14 +174,6 @@ const signUpFunction = async (req, res) => {
                                         });
                                     });
 
-                                //creation du medical record avec la creation du user
-                                MedicalRecord.create({
-                                    gender: newPatient.gender,
-                                    email: newPatient.email,
-                                    dateOfBirth: newPatient.dateOfBirth,
-                                    Patient: newPatient._id,
-                                });
-
                             })
                             .catch((err) => {
                                 res.json({

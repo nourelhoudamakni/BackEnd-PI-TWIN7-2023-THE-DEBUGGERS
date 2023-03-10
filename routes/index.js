@@ -72,11 +72,7 @@ router.get('/auth/google/callback',
     res.json('Successfully logged in !');
   });
 
-// Logout route
-router.get('/logout', (req, res) => {
-  req.logout();
-  res.redirect('/');
-});
+
 
 passport.serializeUser((user, done) => {
   done(null, user);
