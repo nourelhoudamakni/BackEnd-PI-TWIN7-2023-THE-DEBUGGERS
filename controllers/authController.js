@@ -23,6 +23,11 @@ const handleErrors=(err)=>{
         errors.password="that password is incorrect";
     }
 
+       //email not verified 
+       if(err.message==='email not confirmed!'){
+        errors.confirmed="email not confirmed!";
+    }
+
     //duplicatee email error code
     if (err.code===11000){             //11000:code de error unique email
         errors.email="that email is already registred";
