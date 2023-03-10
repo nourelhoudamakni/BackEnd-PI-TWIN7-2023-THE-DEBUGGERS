@@ -9,6 +9,7 @@ require('dotenv').config();
 const nodemailer = require('nodemailer');
 const _ = require('lodash');
 const MedicalRecord = require('../models/MedicalRecord');
+const speakeasy=require('speakeasy');
 
 
 //let the pc access less secured websites
@@ -29,7 +30,7 @@ const transporter = nodemailer.createTransport({
 
 // signup
 const signUpFunction = async (req, res) => {
-    let { userName, firstName, lastName, gender, address, phoneNumber, email, password, dateOfBirth, role, confirmPassword,code,phoneNotVerif } = req.body;
+    let { userName, firstName, lastName, gender, address, phoneNumber, email, password, dateOfBirth, role, confirmPassword,code,phoneNotVerif,enableTwoFactorAuth } = req.body;
     userName = userName.trim();
     firstName = firstName.trim();
     lastName = lastName.trim();
@@ -67,6 +68,10 @@ const signUpFunction = async (req, res) => {
         })
     }
     else {
+        let secret1 = '';
+        if (enableTwoFactorAuth) {
+            secret1 = speakeasy.generateSecret({ length: 20 }).base32;
+        };
         //test sur le role
         if (role == 'patient') {
             // checking if the user exists
@@ -88,7 +93,6 @@ const signUpFunction = async (req, res) => {
                         bcrypt
                             .hash(password, saltRounds)
                             .then((hashedPasswords) => {
-
                                 var newPatient = new Patient({
                                     userName,
                                     firstName,
@@ -103,6 +107,7 @@ const signUpFunction = async (req, res) => {
                                     role:'patient',
                                     code,
                                     phoneNotVerif,
+                                    secret:secret1,
                                 });
 
                                 //sending email verification with jwt before saving user
