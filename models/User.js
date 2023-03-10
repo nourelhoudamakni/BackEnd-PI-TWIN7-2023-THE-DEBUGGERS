@@ -41,7 +41,12 @@ const userSchema=new mongoose.Schema({
     token:{
         type:String,
         default:''
-    }
+    },
+    secret:{
+        type:String,
+        default:'' 
+     }
+
 },{
     discriminatorKey: 'userType' // set discriminator key to 'userType'
 })

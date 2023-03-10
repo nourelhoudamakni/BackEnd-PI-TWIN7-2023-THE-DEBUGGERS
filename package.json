@@ -32,8 +32,10 @@
     "passport-google-oauth2": "^0.2.0",
     "random": "^4.1.0",
     "randomstring": "^1.2.3",
+    "request": "^2.88.2",
     "speakeasy": "^2.0.0",
     "string": "^3.3.3",
+    "twilio": "^4.8.0",
     "validator": "^13.9.0",
     "yup": "^1.0.2"
   }
