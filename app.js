@@ -18,11 +18,18 @@ var HospitalRouter=require('./routes/Hospital');
 var serviceRouter = require('./routes/service');
 var adminRouter = require('./routes/adminDash');
 var indexRouter=require('./routes/index');
+const session = require('express-session');
 
 
 
 
 var app = express();
+
+app.use(session({
+  secret: 'your_secret_key',
+  resave: false,
+  saveUninitialized: false
+}));
 
 //connection to db
 mongoose.set('strictQuery',true);
@@ -41,14 +48,14 @@ app.set('view engine', 'ejs');
 
 // app.get('/', (req, res) => res.send('Home Page'));
 app.get('/doctor', requireAuth, (req, res) => {
-  if (req.userRole !== 'Doctor') {
+  if (req.userRole !== 'doctor') {
     res.send('Home Page');
   } else {
     res.send('Doctor Space');
   }
 });
 app.get('/patient', requireAuth, (req, res) => {
-  if (req.userRole !== 'Patient') {
+  if (req.userRole !== 'patient') {
     res.send('Home Page');
   } else {
     res.send('Patient Space');

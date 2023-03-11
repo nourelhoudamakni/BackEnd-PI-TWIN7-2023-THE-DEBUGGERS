@@ -12,6 +12,8 @@
     "chai": "^4.3.7",
     "connect-flash": "^0.1.1",
     "cookie-parser": "~1.4.4",
+    "cookie-session": "^2.0.0",
+    "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "debug": "~2.6.9",
     "dotenv": "^16.0.3",
@@ -32,12 +34,16 @@
     "otp": "^1.1.0",
     "passport": "^0.6.0",
     "passport-google-oauth2": "^0.2.0",
+    "passport-google-oauth20": "^2.0.0",
     "random": "^4.1.0",
     "randomstring": "^1.2.3",
     "request": "^2.88.2",
     "speakeasy": "^2.0.0",
     "string": "^3.3.3",
+<<<<<<< HEAD
     "supertest": "^6.3.3",
+=======
+>>>>>>> main
     "twilio": "^4.8.0",
     "validator": "^13.9.0",
     "yup": "^1.0.2"

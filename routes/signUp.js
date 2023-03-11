@@ -38,12 +38,13 @@ router.get('/:token', async (req, res) => {
             },
             { new: true }
         );
-        const medicalRecord = await MedicalRecord.findOne({ email: patient.email });
-        if (!medicalRecord) {
-            res.json({
-                message: 'no medical record found !'
-            })
-        }
+          //creation du medical record avec la creation du user
+          const medicalRecord= await MedicalRecord.create({
+            gender: patient.gender,
+            email: patient.email,
+            dateOfBirth: patient.dateOfBirth,
+            Patient: patient._id,
+        });
 
         await Patient.findByIdAndUpdate(id,
             {

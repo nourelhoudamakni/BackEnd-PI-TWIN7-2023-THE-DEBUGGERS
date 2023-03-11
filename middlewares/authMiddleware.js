@@ -12,14 +12,11 @@ const requireAuth=(req,res,next)=>{
               } else {
                 console.log(decodedToken);
                 const { role } = decodedToken;
-                if (role === 'Patient') {
-                  req.userRole = 'Patient';
+                if (role === 'patient') {
+                  req.userRole = 'patient';
                   next();
-                } else if (role === 'Doctor') {
-                  req.userRole = 'Doctor';
-                  next();
-                }else if (role === 'Admin') {
-                  req.userRole = 'Admin';
+                } else if (role === 'doctor') {
+                  req.userRole = 'doctor';
                   next();
                 }
                  else {
