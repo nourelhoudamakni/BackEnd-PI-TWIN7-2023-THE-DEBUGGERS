@@ -6,7 +6,7 @@ const UserModel = require('../models/User');
 const getDoctorsConfirmedValidated = async (req, res, next) => {
   try {
     // search for all documents where confirmed is true, IsValidated is true, and role is doctor
-    const confirmedValidatedDoctors  = await UserModel.find({  confirmed: true, IsValidated: true , "role": "doctor" });
+    const confirmedValidatedDoctors  = await DoctorModel.find({  confirmed: true, IsValidated: true , "role": "doctor" });
     res.status(200).json(confirmedValidatedDoctors);
   } catch (err) {
     console.error(err);
@@ -18,7 +18,7 @@ const getDoctorsConfirmedValidated = async (req, res, next) => {
 const getDoctorsConfirmedNonValidated = async (req, res, next) => {
     try {
       // search for all documents where confirmed is true, IsValidated is false, and role is doctor
-      const confirmedNonValidatedDoctors  = await UserModel.find({  confirmed: true, IsValidated: false ,  "role": "doctor" });
+      const confirmedNonValidatedDoctors  = await DoctorModel.find({  confirmed: true, IsValidated: false ,  "role": "doctor" });
       res.status(200).json(confirmedNonValidatedDoctors);
     } catch (err) {
       console.error(err);
@@ -39,9 +39,9 @@ const getDoctorsConfirmedNonValidated = async (req, res, next) => {
         const trimmedDoctorId = doctorId.trim();
             
         // Find the doctor with the specified ID and update their isValidated field to true
-        const updatedDoctor = await UserModel.findByIdAndUpdate(
+        const updatedDoctor = await DoctorModel.findByIdAndUpdate(
           trimmedDoctorId,
-          { isValidated: true },
+          { IsValidated: true },
           { new: true }
         );
         
@@ -61,7 +61,7 @@ const getDoctorsConfirmedNonValidated = async (req, res, next) => {
 
     const getConfirmedPatients = async (req, res, next) => {
         try {
-          const confirmedPatients = await UserModel.find({ confirmed: true , "role": "patient"});
+          const confirmedPatients = await PatientModel.find({ confirmed: true , "role": "patient"});
           res.status(200).json(confirmedPatients);
         } catch (err) {
           console.error(err);
@@ -77,11 +77,11 @@ const getDoctorsConfirmedNonValidated = async (req, res, next) => {
         const { name } = req.params;
         try {
           // Find patients whose first or last name matches the given name using case-insensitive regex matching
-          const patients = await UserModel.find({
+          const patients = await PatientModel.find({
             $or: [
               { firstName: { $regex: name, $options: 'i' } },
               { lastName: { $regex: name, $options: 'i' } },
-            ], "role": "patient"
+            ], "role": "patient" , confirmed: true
           });
           res.status(200).json(patients);
         } catch (err) {
@@ -92,7 +92,7 @@ const getDoctorsConfirmedNonValidated = async (req, res, next) => {
 
       const countPatient = async (req, res, next) => {
         try {
-          const count = await UserModel.countDocuments({ confirmed: true , "role": "patient" });
+          const count = await PatientModel.countDocuments({ confirmed: true , "role": "patient" });
           res.status(200).json({ count });
         } catch (err) {
           console.error(err);
@@ -102,7 +102,7 @@ const getDoctorsConfirmedNonValidated = async (req, res, next) => {
 
       const countDoctorValidated = async (req, res, next) => {
         try {
-          const count = await UserModel.countDocuments({ confirmed: true, IsValidated: true , "role": "doctor" });
+          const count = await DoctorModel.countDocuments({ confirmed: true, IsValidated: true , "role": "doctor" });
           res.status(200).json({ count });
         } catch (err) {
           console.error(err);
