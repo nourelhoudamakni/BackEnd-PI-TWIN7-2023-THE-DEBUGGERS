@@ -208,7 +208,7 @@ const signUpFunction = async (req, res) => {
                         // Generate JWT token
                         const token = jwt.sign({ email }, secretKey, { expiresIn: '1h' });
                         // password handling
-                        const saltRounds = 10;
+                        const saltRounds = 12;
                         bcrypt
                             .hash(password, saltRounds)
                             .then((hashedPasswords) => {
@@ -263,6 +263,7 @@ const signUpFunction = async (req, res) => {
                                             message: 'SignUp successful',
                                             data: result,
                                             token,
+                                            
                                         });
                                     })
                                     .catch((err) => {
