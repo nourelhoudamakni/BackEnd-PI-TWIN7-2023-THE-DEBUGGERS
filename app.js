@@ -16,11 +16,18 @@ var HospitalRouter=require('./routes/Hospital');
 var serviceRouter = require('./routes/service');
 var adminRouter = require('./routes/adminDash');
 var indexRouter=require('./routes/index');
+const session = require('express-session');
 
 
 
 
 var app = express();
+
+app.use(session({
+  secret: 'your_secret_key',
+  resave: false,
+  saveUninitialized: false
+}));
 
 //connection to db
 mongoose.set('strictQuery',true);
@@ -37,7 +44,7 @@ app.use(express.static('public'));
 app.set('view engine', 'ejs');
 
 
-app.get('/', (req, res) => res.send('Home Page'));
+// app.get('/', (req, res) => res.send('Home Page'));
 app.get('/doctor', requireAuth, (req, res) => {
   if (req.userRole !== 'doctor') {
     res.send('Home Page');
@@ -55,7 +62,7 @@ app.get('/patient', requireAuth, (req, res) => {
 app.get('/admin',requireAuthAdmin,(req,res)=>res.send('Admin Space'));
 
 /////les paths des routes 
-//app.use('/',indexRouter)
+app.use('/',indexRouter)
 app.use(authRoutes);  //pour appellé les methode dans authRoutes
 app.use('/signup',signUpRouter);
 app.use('/MedicalRecord', medicalRecordRouter);
