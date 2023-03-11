@@ -5,7 +5,7 @@ const user=require('../models/User');
 const bcrypt = require('bcrypt');
 const express = require('express');
 require('dotenv').config();
-const client = require('twilio')(process.env.ACCOUNT_SID_TWILIO,process.env.AUTH_TOKEN_TWILIO);
+// const client = require('twilio')(process.env.ACCOUNT_SID_TWILIO,process.env.AUTH_TOKEN_TWILIO);
 
 
 //update Doctors profile 
@@ -20,46 +20,46 @@ exports.updateDoctor=async(req,res)=>{
 }
 
 //Send : mobile verifications : 
-exports.sendSms=async(req,res)=>{ 
-    try { 
-        const phone=req.body.phone; 
-        const userId=req.params.userId;
-        const userNumber=await user.findById(userId);
-        userNumber.phoneNotVerif=phone;
-        const crypto = require('crypto');
-        const code = crypto.randomInt(1000000);
-        userNumber.code=code; 
-        await userNumber.save();
-        client.messages.create({ 
-            body:`Your OTP is ${code}`, 
-            from:process.env.PHONE_NUMBER_TWILIO,
-            to:`${phone}`
-        }).then(res.json(console.log(code)))
-    }catch(error){ 
-        res.status(500).json(error.message);
-    }
-}
+// exports.sendSms=async(req,res)=>{ 
+//     try { 
+//         const phone=req.body.phone; 
+//         const userId=req.params.userId;
+//         const userNumber=await user.findById(userId);
+//         userNumber.phoneNotVerif=phone;
+//         const crypto = require('crypto');
+//         const code = crypto.randomInt(1000000);
+//         userNumber.code=code; 
+//         await userNumber.save();
+//         client.messages.create({ 
+//             body:`Your OTP is ${code}`, 
+//             from:process.env.PHONE_NUMBER_TWILIO,
+//             to:`${phone}`
+//         }).then(res.json(console.log(code)))
+//     }catch(error){ 
+//         res.status(500).json(error.message);
+//     }
+// }
 
 //Receive : mobile verification : 
-exports.verifNumber=async(req,res)=>{ 
-     try{ 
-        const codeEnter=req.body.codeEnter; 
-        const userId=req.params.userId;
-        const userNumber=await user.findById(userId);
-        if (userNumber.code==codeEnter){ 
-                userNumber.phoneNumber=userNumber.phoneNotVerif;
-                userNumber.code=""; 
-                userNumber.phoneNotVerif="";
-                await userNumber.save();
-                res.json(console.log("number verified !"));
+// exports.verifNumber=async(req,res)=>{ 
+//      try{ 
+//         const codeEnter=req.body.codeEnter; 
+//         const userId=req.params.userId;
+//         const userNumber=await user.findById(userId);
+//         if (userNumber.code==codeEnter){ 
+//                 userNumber.phoneNumber=userNumber.phoneNotVerif;
+//                 userNumber.code=""; 
+//                 userNumber.phoneNotVerif="";
+//                 await userNumber.save();
+//                 res.json(console.log("number verified !"));
 
-        }else{ 
-            res.status(400).json({error:"wrong confirm code"})
-        }
-     }catch(error){ 
-        res.status(500).json(error.message); 
-     }
-}
+//         }else{ 
+//             res.status(400).json({error:"wrong confirm code"})
+//         }
+//      }catch(error){ 
+//         res.status(500).json(error.message); 
+//      }
+// }
 
 
 //updateDoctorPassword 

@@ -17,9 +17,11 @@ const EMAIL_SECRET = 'mysecretemail';
 
 
 router.post('/', signUpFunction);
-router.get('/patient',(req,res)=>{
-    const patient=Patient.findOne({email:"hamza.hafaiedh13+2@gmail.com"});
-    console.log(patient.userName);
+router.get('/patient',async(req,res)=>{
+    
+    //const patient=await Doctor.findById('640bb62c9c6a7e7bf9372632');
+    const patient=await Doctor.findOne({ email:'hamzaaaa@gmail.com' });
+    console.log(patient.IsValidated);
 })
 
 // Endpoint for email verification

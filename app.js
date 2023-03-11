@@ -9,7 +9,7 @@ var authRoutes = require('./routes/authRoutes');
 const { requireAuth } = require('./middlewares/authMiddleware');
 const { requireAuthAdmin } = require('./middlewares/authMiddleware');
 require ('dotenv').config();
-
+const patient =require('./models/Patient');
 var medicalRecordRouter=require('./routes/medicalRecord');
 var patientRouter=require('./routes/patientRouter');
 var doctorRouter=require('./routes/doctorRouter');
@@ -72,6 +72,7 @@ app.use(function(req, res, next) {
   next(createError(404));
 });
 
+
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
@@ -88,3 +89,11 @@ const server=http.createServer(app);
 server.listen(5000,()=>{
   console.log("app is running on port 5000");
 })
+
+
+
+
+
+
+
+

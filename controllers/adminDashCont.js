@@ -4,7 +4,7 @@ const UserModel = require('../models/User');
 
 const getDoctorsConfirmedValidated = async (req, res, next) => {
   try {
-    const confirmedValidatedDoctors  = await UserModel.find({  confirmed: true, IsValidated: true , "role": "doctor" });
+    const confirmedValidatedDoctors  = await DoctorModel.find({  confirmed: true, IsValidated: true , "role": "doctor" });
     res.status(200).json(confirmedValidatedDoctors);
   } catch (err) {
     console.error(err);
@@ -14,7 +14,7 @@ const getDoctorsConfirmedValidated = async (req, res, next) => {
 
 const getDoctorsConfirmedNonValidated = async (req, res, next) => {
     try {
-      const confirmedNonValidatedDoctors  = await UserModel.find({  confirmed: true, IsValidated: false ,  "role": "doctor" });
+      const confirmedNonValidatedDoctors  = await DoctorModel.find({  confirmed: true, IsValidated: false  });
       res.status(200).json(confirmedNonValidatedDoctors);
     } catch (err) {
       console.error(err);
