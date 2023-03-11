@@ -4,9 +4,8 @@ const path =require('path');
 const user=require('../models/User'); 
 const bcrypt = require('bcrypt');
 const express = require('express');
-require('dotenv').config();
-const client = require('twilio')(process.env.ACCOUNT_SID_TWILIO,process.env.AUTH_TOKEN_TWILIO);
-
+require('dotenv');
+ var client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 //update patient profile 
 exports.updatePatient=async(req,res)=>{ 
     try{ 
