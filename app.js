@@ -9,8 +9,10 @@ var authRoutes = require('./routes/authRoutes');
 const { requireAuth } = require('./middlewares/authMiddleware');
 const { requireAuthAdmin } = require('./middlewares/authMiddleware');
 require ('dotenv').config();
-
+const patient =require('./models/Patient');
 var medicalRecordRouter=require('./routes/medicalRecord');
+var patientRouter=require('./routes/patientRouter');
+var doctorRouter=require('./routes/doctorRouter');
 const signUpRouter=require('./routes/signUp');
 var HospitalRouter=require('./routes/Hospital');
 var serviceRouter = require('./routes/service');
@@ -66,6 +68,8 @@ app.use('/',indexRouter)
 app.use(authRoutes);  //pour appellé les methode dans authRoutes
 app.use('/signup',signUpRouter);
 app.use('/MedicalRecord', medicalRecordRouter);
+app.use('/patient', patientRouter);
+app.use('/doctor', doctorRouter);
 app.use('/hospital',HospitalRouter);
 app.use('/service', serviceRouter);
 app.use('/admin', adminRouter );
@@ -74,6 +78,7 @@ app.use('/admin', adminRouter );
 app.use(function(req, res, next) {
   next(createError(404));
 });
+
 
 // error handler
 app.use(function(err, req, res, next) {
@@ -91,3 +96,11 @@ const server=http.createServer(app);
 server.listen(5000,()=>{
   console.log("app is running on port 5000");
 })
+
+
+
+
+
+
+
+
