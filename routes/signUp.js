@@ -17,8 +17,8 @@ const EMAIL_SECRET = 'mysecretemail';
 
 
 router.post('/', signUpFunction);
-router.get('/patient',(req,res)=>{
-    const patient=Patient.findOne({email:"hamza.hafaiedh13+2@gmail.com"});
+router.get('/patient',async(req,res)=>{
+    const patient= await Patient.findById('640bbaa5ea108a208a853dce');
     console.log(patient.userName);
 })
 

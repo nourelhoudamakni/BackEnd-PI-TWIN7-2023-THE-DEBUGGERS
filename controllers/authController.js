@@ -138,10 +138,10 @@ const sendSecretByEmail = async (email, secret) => {
     }
   };
 
-const logout_get=async(req,res)=>{        //to change the value of the token to ''
-    res.cookie('jwt','',{maxAge:1})    //expire at 1ms
-    res.send('Home Page');
-}
+  const logout_get = async (req, res) => {
+    res.cookie('jwt', '', { maxAge: 1 });
+    res.status(200).json({ user: "Desconnected" });
+  }
 
 const sendRestPasswordMail=async(email,token)=>{
     try{
@@ -200,23 +200,26 @@ const securePassword=async(password)=>{
     }
 }
 
-const reset_password=async(req,res)=>{
-    try{
-        const token=req.query.token;
-        const tokenData=await User.findOne({token:token});
-        if(tokenData){
-            const password=req.body.password;
-            const newPassword=await securePassword(password);
-            const userData=await User.findByIdAndUpdate({_id:tokenData._id},{$set:{password:newPassword,token:''}},{new:true});
-            res.status(200).send({success:true,msg:"User password has been reset",data:userData});
-
-        }else{
-            res.status(200).send({success:true,msg:"this link has been expired."})
-        }
-    }catch(error){
-        res.status(400).send({success:false,msg:error.message})
+const reset_password = async (req, res) => {
+    try {
+      const token = req.query.token;
+      const tokenData = await User.findOne({ token: token });
+      if (tokenData) {
+        const password = req.body.password;
+        const newPassword = await securePassword(password);
+        const userData = await User.findByIdAndUpdate(
+          { _id: tokenData._id },
+          { $set: { password: newPassword, token: '' } },
+          { new: true }
+        );
+        res.status(200).json({ success: true, msg: "User password has been reset" });
+      } else {
+        res.status(200).json({ success: true, msg: "This link has been expired." });
+      }
+    } catch (error) {
+      res.status(400).json({ success: false, msg: error.message });
     }
-}
+  }
 
 const loginAdmin_get=(req,res)=>{
     res.send('Admin Login Page');
