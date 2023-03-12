@@ -1,5 +1,6 @@
 const HospitalServiceModel = require("../models/HospitalService");
-const Hospital = require("../models/Hospital");
+const Hospital = require('../models/Hospital');
+
 // Add a new service
 const addService = async (req, res, next) => {
   try {
@@ -32,10 +33,10 @@ const addService = async (req, res, next) => {
       EmailService,
       Hospital: hospitalId,
     });
-    const validationError = newService.validateSync();
-    if (validationError) {
-      throw new Error(validationError.message);
-    }
+    // const validationError = newService.validateSync();
+    // if (validationError) {
+    //   throw new Error(validationError.message);
+    // }
       await newService.save();
     
       // Return a success message if the service was added successfully
@@ -146,7 +147,6 @@ const countServicesInHospital = async (req, res, next) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
 const getHospitalServices = async (req, res, next) => {
   try {
     // Get the hospitalId from the params
@@ -173,6 +173,6 @@ module.exports = {
     updateService,
     deleteService,
     getallServices,
-    countServicesInHospital ,
-    getHospitalServices
+    countServicesInHospital,
+    getHospitalServices,
   };

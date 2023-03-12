@@ -10,5 +10,4 @@ router.get("/getallservices",getallServices);
 router.get("/countservicesinhospital/:hospitalId",countServicesInHospital);
 router.get("/gethospitalservices/:hospitalId",getHospitalServices);
 
-
 module.exports = router;
