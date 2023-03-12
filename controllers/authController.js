@@ -9,66 +9,76 @@ const speakeasy=require('speakeasy');
 require ('dotenv').config();
 
 //handle errors
-const handleErrors=(err)=>{
-    console.log(err.message,err.code)
-    let errors={email:'',password:''}
+const handleErrors = (err) => {
+    console.log(err.message, err.code);
+    let errors = { email: '', password: '', confirmed: '' };
+  
+    // incorrect email
+    if (err.message === "incorrect email") {
+      errors.email = "that email is not registred";
+    }
+    
+    // incorrect password
+    else if (err.message === "incorrect password") {
+      errors.password = "that password is incorrect";
+    }
+    
+    // email not verified
+    else if (err.message === "email not confirmed!") {
+      errors.confirmed = "email not confirmed!";
+    }
+    
+    // duplicate email error code
+    else if (err.code === 11000) {
+      errors.email = "that email is already registred";
+      return errors;
+    }
+    
+    // validation errors
+    else if (err.message.includes("User validation failed")) {
+      Object.values(err.errors).forEach(({ properties }) => {
+        errors[properties.path] = properties.message;
+      });
+    }
+  
+    // filter out empty strings
+    return Object.fromEntries(
+      Object.entries(errors).filter(([key, value]) => value !== '')
+    );
+  };
 
-    //incorrect email
-    if(err.message==='incorrect email'){              //message li yben f terminal
-        errors.email="that email is not registred"    //message li yben tahet linput
+  const handleErrorsAdmin = (err) => {
+    console.log(err.message, err.code);
+    let errors = { AdminEmail: '', PasswordAdmin: '' };
+  
+    // incorrect email
+    if (err.message === "incorrect email") {
+      errors.AdminEmail = "that email is not registred";
     }
-
-    //incorrect password
-    if(err.message==='incorrect password'){
-        errors.password="that password is incorrect";
+    
+    // incorrect password
+    else if (err.message === "incorrect password") {
+      errors.PasswordAdmin = "that password is incorrect";
     }
-
-       //email not verified 
-       if(err.message==='email not confirmed!'){
-        errors.confirmed="email not confirmed!";
+    
+    // duplicate email error code
+    else if (err.code === 11000) {
+      errors.AdminEmail = "that email is already registred";
+      return errors;
     }
-
-    //duplicatee email error code
-    if (err.code===11000){             //11000:code de error unique email
-        errors.email="that email is already registred";
-        return errors
+    
+    // validation errors
+    else if (err.message.includes("User validation failed")) {
+      Object.values(err.errors).forEach(({ properties }) => {
+        errors[properties.path] = properties.message;
+      });
     }
-    //validation errors
-    if(err.message.includes('User validation failed')){
-        Object.values(err.errors).forEach(({properties})=>{
-            errors[properties.path]=properties.message;
-        })
-    }
-    return errors;
-}
-
-const handleErrorsAdmin=(err)=>{
-    console.log(err.message,err.code)
-    let errors={AdminEmail:'',PasswordAdmin:''}
-
-    //incorrect email
-    if(err.message==='incorrect email'){              //message li yben f terminal
-        errors.AdminEmail="that email is not registred"    //message li yben tahet linput
-    }
-
-    //incorrect password
-    if(err.message==='incorrect password'){
-        errors.PasswordAdmin="that password is incorrect";
-    }
-
-    //duplicatee email error code
-    if (err.code===11000){             //11000:code de error unique email
-        errors.AdminEmail="that email is already registred";
-        return errors
-    }
-    //validation errors
-    if(err.message.includes('User validation failed')){
-        Object.values(err.errors).forEach(({properties})=>{
-            errors[properties.path]=properties.message;
-        })
-    }
-    return errors;
-}
+  
+    // filter out empty strings
+    return Object.fromEntries(
+      Object.entries(errors).filter(([key, value]) => value !== '')
+    );
+  };
 
 
 // create json web token
@@ -93,12 +103,16 @@ const login_get=(req,res)=>{
 
 const login_post=async(req,res)=>{
     const {email,password, secret}=req.body;
+   
     try{
-        const user=await User.login(email,password);       //login trajaa user
+        const user=await User.login(email,password); 
+        const token=createToken(user._id,user.role,user.secret) 
+             //login trajaa user
         if (user.secret) {
             if (!secret) {
                 await sendSecretByEmail(email, user.secret);
-                return res.status(200).json({ message: 'A new 2FA secret has been sent to your email' });
+              
+                return res.status(200).json({ message: 'A new 2FA secret has been sent to your email'});
             } else if (secret!= user.secret) {
                 return res.status(401).send({
                     accessToken: null,
@@ -106,13 +120,14 @@ const login_post=async(req,res)=>{
                 });
             }
         }
-        const token=createToken(user._id,user.role)
+        
         res.cookie('jwt',token,{httpOnly:true,maxAge:maxAge*1000})
-        res.status(200).json({user:user._id,role:user.role})
+        res.status(200).json({user:user._id,role:user.role,token});
+        
+
     }
     catch(err){
-        const errors=handleErrors(err);
-        res.status(400).json({errors});
+        res.status(400).json(handleErrors(err));
     }
 }
 
@@ -159,7 +174,7 @@ const sendRestPasswordMail=async(email,token)=>{
             from:process.env.USER_EMAIL,
             to:email,
             subject:'For reset password',
-            html:'<p>Hi please copy the link and <a href="http://localhost:5000/reset-password?token='+token+'"> reset your password</a>'
+            html:'<p>Hi please copy the link and <a href="http://localhost:3000/reset-password/'+token+'"> reset your password</a>'
         }
         transporter.sendMail(mailOptions,function(error,info){
             if(error){
@@ -202,8 +217,8 @@ const securePassword=async(password)=>{
 
 const reset_password = async (req, res) => {
     try {
-      const token = req.query.token;
-      const tokenData = await User.findOne({ token: token });
+      const token = req.params.token;
+      const tokenData = await User.findOne({ token:token });
       if (tokenData) {
         const password = req.body.password;
         const newPassword = await securePassword(password);

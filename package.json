@@ -7,8 +7,11 @@
     "dev": "nodemon app.js"
   },
   "dependencies": {
+    "assert": "^2.0.0",
     "bcrypt": "^5.1.0",
     "bcryptjs": "^2.4.3",
+    "chai": "^4.3.7",
+    "chai-http": "^4.3.0",
     "connect-flash": "^0.1.1",
     "cookie-parser": "~1.4.4",
     "cookie-session": "^2.0.0",
@@ -39,6 +42,7 @@
     "request": "^2.88.2",
     "speakeasy": "^2.0.0",
     "string": "^3.3.3",
+    "supertest": "^6.3.3",
     "twilio": "^4.8.0",
     "validator": "^13.9.0",
     "yup": "^1.0.2"

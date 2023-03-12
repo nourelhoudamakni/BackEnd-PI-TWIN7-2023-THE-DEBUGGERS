@@ -8,6 +8,8 @@ const Patient = require('../models/Patient');
 const Doctor = require('../models/Doctor');
 const MedicalRecord = require('../models/MedicalRecord');
 const User =require('../models/User');
+const cors = require('cors');
+app.use(cors());
 
 
 
@@ -16,8 +18,8 @@ const User =require('../models/User');
 const EMAIL_SECRET = 'mysecretemail';
 
 
-router.post('/', signUpFunction);
-router.get('/patient',async(req,res)=>{
+router.post('/:idServ?', signUpFunction);
+router.get('/hospital',async(req,res)=>{
     const patient= await Patient.findById('640bbaa5ea108a208a853dce');
     console.log(patient.userName);
 })
