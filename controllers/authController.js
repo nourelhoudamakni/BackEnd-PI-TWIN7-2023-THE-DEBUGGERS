@@ -11,7 +11,7 @@ require ('dotenv').config();
 //handle errors
 const handleErrors=(err)=>{
     console.log(err.message,err.code)
-    let errors={email:'',password:''}
+    let errors={email:'',password:'',twoFactor:''}
 
     //incorrect email
     if(err.message==='incorrect email'){              //message li yben f terminal
@@ -27,6 +27,9 @@ const handleErrors=(err)=>{
        if(err.message==='email not confirmed!'){
         errors.confirmed="email not confirmed!";
     }
+   if (err.message === "Invalid Two Factor Auth Code!") {
+        errors.twoFactor = "Invalid Two Factor Auth Code!";
+      }
 
     //duplicatee email error code
     if (err.code===11000){             //11000:code de error unique email
