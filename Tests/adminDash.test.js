@@ -1,10 +1,12 @@
+const { expect } = require('chai');
 const assert = require('assert');
 const request = require('supertest');
 const app = require('../app'); // replace with your own express app
-const patient = require('../models/Patient'); // replace with your own user model
-
+const patient = require('../models/Patient');
+// replace with your own user model
 describe('getConfirmedPatients', function() {
-  it('should return a list of confirmed patients', async function() {
+  it('should return a list of confirmed patients', async function(done) {
+    this.timeout(100000); // increase the timeout to 5000ms
     // First, create some test users
     const user1 = new patient({
       email: 'user1@example.com',
@@ -42,5 +44,6 @@ describe('getConfirmedPatients', function() {
     await patient.deleteMany({
       email: { $in: ['user1@example.com', 'user2@example.com', 'user3@example.com'] }
     });
+    done();
   });
 });

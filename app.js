@@ -22,12 +22,11 @@ const session = require('express-session');
 const cors = require('cors');
 
 
-
-
-
 var app = express();
-app.use(cors());
 
+
+
+app.use(cors());
 app.use(session({
   secret: 'your_secret_key',
   resave: false,
