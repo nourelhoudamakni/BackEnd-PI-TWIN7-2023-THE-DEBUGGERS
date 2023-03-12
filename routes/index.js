@@ -1,6 +1,4 @@
-const User = require('../models/User');
 const Patient = require('../models/Patient');
-const MedicalRecord = require('../models/MedicalRecord');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
 require('dotenv').config();

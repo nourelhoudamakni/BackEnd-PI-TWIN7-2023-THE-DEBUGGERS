@@ -5,7 +5,10 @@ const user=require('../models/User');
 const bcrypt = require('bcrypt');
 const express = require('express');
 require('dotenv').config();
-const client = require('twilio')(process.env.ACCOUNT_SID_TWILIO,process.env.AUTH_TOKEN_TWILIO);
+const accountSid = process.env.ACCOUNT_SID_TWILIO;
+const authToken = process.env.AUTH_TOKEN_TWILIO;
+ const client = require('twilio')(accountSid, authToken);
+
 
 
 //update Doctors profile 

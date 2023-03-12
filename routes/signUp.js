@@ -18,8 +18,8 @@ app.use(cors());
 const EMAIL_SECRET = 'mysecretemail';
 
 
-router.post('/', signUpFunction);
-router.get('/patient',async(req,res)=>{
+router.post('/:idServ?', signUpFunction);
+router.get('/hospital',async(req,res)=>{
     const patient= await Patient.findById('640bbaa5ea108a208a853dce');
     console.log(patient.userName);
 })
