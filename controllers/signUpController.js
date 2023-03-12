@@ -37,14 +37,14 @@ const signUpFunction = async (req, res) => {
     lastName = lastName.trim();
     gender = gender.trim();
     address = address.trim();
-    phoneNumber = phoneNumber.trim();
+
     email = email.trim();
     password = password.trim();
     dateOfBirth = dateOfBirth.trim();
     role = role.trim();
     confirmPassword = confirmPassword.trim();
-    code = code.trim();
-    phoneNotVerif=phoneNotVerif.trim();
+
+
 
 
     if (userName == '' || firstName == '' || lastName == '' || gender == '' || address == '' || email == '' || password == '' || dateOfBirth == '' || role == '' || confirmPassword == '') {
@@ -87,8 +87,7 @@ const signUpFunction = async (req, res) => {
                         });
                     } else {
                         // save User
-                        // Generate JWT token
-                        const token = jwt.sign({ email }, secretKey, { expiresIn: '1h' });
+                        
                         // password handling
                         const saltRounds = 10;
                         bcrypt
@@ -137,7 +136,7 @@ const signUpFunction = async (req, res) => {
                                 try {
                                     var emailToken = jwt.sign(
                                         {
-                                            user: _.pick(newPatient, 'id'),
+                                            user: _.pick(newPatient, 'id','role'),
                                         },
                                         EMAIL_SECRET,
                                         {
@@ -165,7 +164,7 @@ const signUpFunction = async (req, res) => {
                                             status: 'SUCCESS',
                                             message: 'SignUp successful',
                                             data: result,
-                                            token,
+                                            emailToken,
                                         });
                                     })
                                     .catch((err) => {
@@ -196,20 +195,20 @@ const signUpFunction = async (req, res) => {
 
         }
         else if (role == 'doctor') {
-            const {idServ}=req.params;
-            if(!idServ){
-                return(res.json({
-                    status: 'FAILED',
-                    message: 'You forgot to insert the service id! ',
-                }));
-            };
-            const service= await HospitalService.findById(idServ);
-            // if(!service){
-            //     res.json({
+            // const {idServ}=req.params;
+            // if(!idServ){
+            //     return(res.json({
             //         status: 'FAILED',
-            //         message: 'invalid service id! ',
-            //     });
-            // }
+            //         message: 'You forgot to insert the service id! ',
+            //     }));
+            // };
+            // const service= await HospitalService.findById(idServ);
+            // // if(!service){
+            // //     res.json({
+            // //         status: 'FAILED',
+            // //         message: 'invalid service id! ',
+            // //     });
+            // // }
             await User.find({ email })
                 .then((result) => {
                     console.log('After User.find()');
@@ -220,8 +219,6 @@ const signUpFunction = async (req, res) => {
                         });
                     } else {
                         // save User
-                        // Generate JWT token
-                        const token = jwt.sign({ email }, secretKey, { expiresIn: '1h' });
                         // password handling
                         const saltRounds = 12;
                         bcrypt
@@ -240,7 +237,7 @@ const signUpFunction = async (req, res) => {
                                     confirmed: false,
                                     IsValidated: false,
                                     role:'doctor',
-                                    Service:service._id,
+                                    // Service:service._id,
                                     code,
                                     phoneNotVerif,
                                 });
@@ -250,7 +247,7 @@ const signUpFunction = async (req, res) => {
                                 try {
                                     var emailToken = jwt.sign(
                                         {
-                                            user: _.pick(newDoctor, 'id'),
+                                            user: _.pick(newDoctor, 'id','role'),
                                         },
                                         EMAIL_SECRET,
                                         {
@@ -278,7 +275,7 @@ const signUpFunction = async (req, res) => {
                                             status: 'SUCCESS',
                                             message: 'SignUp successful',
                                             data: result,
-                                            token,
+                                            emailToken,
                                             
                                         });
                                     })
