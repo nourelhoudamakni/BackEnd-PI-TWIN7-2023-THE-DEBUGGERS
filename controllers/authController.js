@@ -93,12 +93,16 @@ const login_get=(req,res)=>{
 
 const login_post=async(req,res)=>{
     const {email,password, secret}=req.body;
+   
     try{
-        const user=await User.login(email,password);       //login trajaa user
+        const user=await User.login(email,password); 
+        const token=createToken(user._id,user.role,user.secret) 
+             //login trajaa user
         if (user.secret) {
             if (!secret) {
                 await sendSecretByEmail(email, user.secret);
-                return res.status(200).json({ message: 'A new 2FA secret has been sent to your email' });
+              
+                return res.status(200).json({ message: 'A new 2FA secret has been sent to your email',token });
             } else if (secret!= user.secret) {
                 return res.status(401).send({
                     accessToken: null,
@@ -106,9 +110,11 @@ const login_post=async(req,res)=>{
                 });
             }
         }
-        const token=createToken(user._id,user.role)
+        
         res.cookie('jwt',token,{httpOnly:true,maxAge:maxAge*1000})
-        res.status(200).json({user:user._id,role:user.role})
+        res.status(200).json({user:user._id,role:user.role,token});
+        
+
     }
     catch(err){
         const errors=handleErrors(err);
@@ -159,7 +165,7 @@ const sendRestPasswordMail=async(email,token)=>{
             from:process.env.USER_EMAIL,
             to:email,
             subject:'For reset password',
-            html:'<p>Hi please copy the link and <a href="http://localhost:5000/reset-password?token='+token+'"> reset your password</a>'
+            html:'<p>Hi please copy the link and <a href="http://localhost:3000/reset-password/'+token+'"> reset your password</a>'
         }
         transporter.sendMail(mailOptions,function(error,info){
             if(error){
@@ -202,8 +208,10 @@ const securePassword=async(password)=>{
 
 const reset_password = async (req, res) => {
     try {
-      const token = req.query.token;
-      const tokenData = await User.findOne({ token: token });
+      const token = req.params.token;
+      console.log(token)
+      const tokenData = await User.findOne({ token:token });
+      console.log(tokenData)
       if (tokenData) {
         const password = req.body.password;
         const newPassword = await securePassword(password);

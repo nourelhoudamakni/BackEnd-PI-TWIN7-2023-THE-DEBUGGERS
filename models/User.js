@@ -28,10 +28,6 @@ const userSchema=new mongoose.Schema({
     confirmPassword:String,
     code:String,
     phoneNotVerif:String,
-    secret:{
-        type:String,
-        default:'' 
-     },
     role:{
         type:String,
         requried:true,

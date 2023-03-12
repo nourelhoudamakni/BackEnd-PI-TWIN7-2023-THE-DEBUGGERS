@@ -15,7 +15,7 @@ router.get('/login',login_get);
 router.post('/login',login_post);
 router.get('/logout',logout_get);
 router.post('/forget-password',forget_password);
-router.post('/reset-password',reset_password);
+router.post('/reset-password/:token',reset_password);
 router.get('/loginAdmin',loginAdmin_get);
 router.post('/loginAdmin',loginAdmin_post);router.post('/loginAdmin',loginAdmin_post);
 router.get('/logoutAdmin',logoutAdmin_get);
