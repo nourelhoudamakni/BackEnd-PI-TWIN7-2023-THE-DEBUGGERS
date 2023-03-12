@@ -66,7 +66,7 @@ passport.authenticate('google', { failureRedirect: '/login' }),
 function(req, res) {
   // Successful authentication, redirect to profile page
   const token = req.user.token;
-  res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge*1000 });
+  res.cookie('jwt', token, { maxAge: maxAge*1000 });
   res.redirect('http://localhost:3000/home');
 });
 
