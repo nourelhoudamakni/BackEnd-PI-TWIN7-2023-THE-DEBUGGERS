@@ -8,7 +8,6 @@ const Patient = require('../models/Patient');
 const Doctor = require('../models/Doctor');
 const MedicalRecord = require('../models/MedicalRecord');
 const User =require('../models/User');
-const { VariableInstance } = require('twilio/lib/rest/serverless/v1/service/environment/variable');
 
 const maxAge= 3 * 24 * 60 * 60 
 
