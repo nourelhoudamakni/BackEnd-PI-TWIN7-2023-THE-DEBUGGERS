@@ -147,11 +147,32 @@ const countServicesInHospital = async (req, res, next) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+const getHospitalServices = async (req, res, next) => {
+  try {
+    // Get the hospitalId from the params
+    const hospitalId = req.params.hospitalId;
+
+    // Find all services in the HospitalServiceModel collection that match the given hospitalId
+    const services = await HospitalServiceModel.find({ Hospital: hospitalId });
+
+    // If no services are found, return a 404 error
+    if (services.length === 0) {
+      return res.status(404).json({ message: "No services found for this hospital" });
+    }
+
+    // Return the services as a response
+    res.status(200).json(services);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 
 module.exports = {
     addService,
     updateService,
     deleteService,
     getallServices,
-    countServicesInHospital
+    countServicesInHospital,
+    getHospitalServices,
   };
