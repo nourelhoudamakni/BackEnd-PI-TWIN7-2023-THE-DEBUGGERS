@@ -89,4 +89,15 @@ exports.updateUserPassword=async(req,res)=>{
         res.status(500).json(err.message);
     }
 }
-    
+
+
+//get user by id : 
+exports.getUserById=async(req,res)=>{ 
+    try{
+        const idUser=req.params.idUser;
+        const userSearched=await user.findById(idUser);
+        res.json(userSearched);
+    }catch(err){ 
+        res.status(500).json(err.message);
+    }
+}

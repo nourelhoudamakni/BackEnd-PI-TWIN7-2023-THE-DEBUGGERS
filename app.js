@@ -19,12 +19,14 @@ var serviceRouter = require('./routes/service');
 var adminRouter = require('./routes/adminDash');
 var indexRouter=require('./routes/index');
 const session = require('express-session');
-
-
+const cors = require('cors');
 
 
 var app = express();
 
+
+
+app.use(cors());
 app.use(session({
   secret: 'your_secret_key',
   resave: false,
