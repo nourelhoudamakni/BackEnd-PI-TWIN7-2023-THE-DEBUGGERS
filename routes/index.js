@@ -4,7 +4,6 @@ const GoogleStrategy = require('passport-google-oauth2').Strategy;
 require('dotenv').config();
 var express = require('express');
 var router = express.Router();
-const session = require('express-session');
 
 var app = express();
 
@@ -39,17 +38,17 @@ passport.use(new GoogleStrategy({
     const { sub, name, given_name, family_name, email } = profile;
 
     // Check if user already exists in database
-    Patient.findOne({ email: email })
+    Patient.findOne({ email: email,confirmed:true })
       .then((user) => {
         if (user) {
-          // If user already exists, return user data
+          // If user already exists, generate and return JWT token
           const token = generateToken(user);
           console.log(token);
-          // res.cookie('jwt',token,{httpOnly:true,maxAge:maxAge*1000});
           return done(null, { user: profile, token });
         }
         else {
-          return (console.log("user not found!"));
+          // If user does not exist, return error response
+          return done(null, false, { message: "User not found" })
         }
       })
       .catch((err) => {
@@ -57,19 +56,19 @@ passport.use(new GoogleStrategy({
       });
   }
 ));
-
 // Authentication route
 router.get('/auth/google',
   passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 // Callback route after successful authentication
 router.get('/auth/google/callback',
-  passport.authenticate('google'),
-  function (req, res) {
-    // Redirect to user's profile page after successful authentication
-    res.json('Successfully logged in !');
-  });
-
+passport.authenticate('google', { failureRedirect: '/login' }),
+function(req, res) {
+  // Successful authentication, redirect to profile page
+  const token = req.user.token;
+  res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge*1000 });
+  res.redirect('http://localhost:3000/home');
+});
 
 
 passport.serializeUser((user, done) => {
