@@ -8,6 +8,8 @@ const Patient = require('../models/Patient');
 const Doctor = require('../models/Doctor');
 const MedicalRecord = require('../models/MedicalRecord');
 const User =require('../models/User');
+const cors = require('cors');
+app.use(cors());
 
 
 
