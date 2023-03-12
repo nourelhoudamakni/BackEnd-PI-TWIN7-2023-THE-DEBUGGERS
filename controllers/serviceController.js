@@ -1,4 +1,5 @@
 const HospitalServiceModel = require("../models/HospitalService");
+const Hospital = require('../models/Hospital');
 
 // Add a new service
 const addService = async (req, res, next) => {
@@ -32,10 +33,10 @@ const addService = async (req, res, next) => {
       EmailService,
       Hospital: hospitalId,
     });
-    const validationError = newService.validateSync();
-    if (validationError) {
-      throw new Error(validationError.message);
-    }
+    // const validationError = newService.validateSync();
+    // if (validationError) {
+    //   throw new Error(validationError.message);
+    // }
       await newService.save();
     
       // Return a success message if the service was added successfully

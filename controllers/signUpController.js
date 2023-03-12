@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const Patient = require('../models/Patient');
 const Doctor = require('../models/Doctor');
+const HospitalService = require('../models/HospitalService');
 const bcrypt = require('bcrypt');
 const express = require('express');
 const User = require('../models/User');
@@ -195,6 +196,20 @@ const signUpFunction = async (req, res) => {
 
         }
         else if (role == 'doctor') {
+            const {idServ}=req.params;
+            if(!idServ){
+                return(res.json({
+                    status: 'FAILED',
+                    message: 'You forgot to insert the service id! ',
+                }));
+            };
+            const service= await HospitalService.findById(idServ);
+            // if(!service){
+            //     res.json({
+            //         status: 'FAILED',
+            //         message: 'invalid service id! ',
+            //     });
+            // }
             await User.find({ email })
                 .then((result) => {
                     console.log('After User.find()');
@@ -225,6 +240,7 @@ const signUpFunction = async (req, res) => {
                                     confirmed: false,
                                     IsValidated: false,
                                     role:'doctor',
+                                    Service:service._id,
                                     code,
                                     phoneNotVerif,
                                 });
