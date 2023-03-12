@@ -11,7 +11,7 @@ require ('dotenv').config();
 //handle errors
 const handleErrors = (err) => {
     console.log(err.message, err.code);
-    let errors = { email: '', password: '', confirmed: '' };
+    let errors = { email: '', password: '', confirmed: '',mailtwofact:'',twofact:''};
   
     // incorrect email
     if (err.message === "incorrect email") {
@@ -26,6 +26,14 @@ const handleErrors = (err) => {
     // email not verified
     else if (err.message === "email not confirmed!") {
       errors.confirmed = "email not confirmed!";
+    }
+
+    else if (err.message === "A new 2FA secret has been sent to your email") {
+      errors.mailtwofact = "A new 2FA secret has been sent to your email";
+    }
+
+    else if (err.message === "Invalid Two Factor Auth Code!") {
+      errors.twofact = "Invalid Two Factor Auth Code!";
     }
     
     // duplicate email error code
@@ -111,13 +119,13 @@ const login_post=async(req,res)=>{
         if (user.secret) {
             if (!secret) {
                 await sendSecretByEmail(email, user.secret);
-              
-                return res.status(200).json({ message: 'A new 2FA secret has been sent to your email',token });
+                const error = new Error("A new 2FA secret has been sent to your email");
+                error.status = 401;
+                throw error;
             } else if (secret!= user.secret) {
-                return res.status(401).send({
-                    accessToken: null,
-                    message: "Invalid Two Factor Auth Code!",
-                });
+                const error = new Error("Invalid Two Factor Auth Code!");
+                error.status = 401;
+                throw error;
             }
         }
         
@@ -218,9 +226,7 @@ const securePassword=async(password)=>{
 const reset_password = async (req, res) => {
     try {
       const token = req.params.token;
-      console.log(token)
       const tokenData = await User.findOne({ token:token });
-      console.log(tokenData)
       if (tokenData) {
         const password = req.body.password;
         const newPassword = await securePassword(password);
