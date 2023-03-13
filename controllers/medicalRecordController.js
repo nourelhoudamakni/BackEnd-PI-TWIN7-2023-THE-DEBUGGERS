@@ -11,11 +11,12 @@ const storage = multer.diskStorage({
       cb(null, 'uploads')
     },
     filename: function (req, file, cb) {
-      cb(null,file.originalname)
+      cb(null, file.originalname)
     }
   });
+  
+exports.upload = multer({ storage: storage }).array('file', 10);
 
- exports.upload = multer({ storage: storage }).single('file');
 
 //ADD MEDICAL RECORD FUNCTION 
 
@@ -83,17 +84,44 @@ exports.addMedicalRecord = async (req, res) => {
 exports.updateMedicalRecord=async (req,res)=>{ 
     try{
         const { medicalRecordId}=req.params;
-        const updatedMedicalRecord=await medicalRecord.findByIdAndUpdate(medicalRecordId,req.body); 
-        res.json(updatedMedicalRecord);
+    
+        const updatedMedicalRecord=await medicalRecord.findByIdAndUpdate(medicalRecordId,req.body,{new:true}); 
+        if(updatedMedicalRecord){
+            res.json(updatedMedicalRecord);
+        }
+        
         if (req.file){ 
             updatedMedicalRecord.files.push(req.file.originalname);
             updatedMedicalRecord.save();
+
         }
         
     }catch(error){ 
         res.status(500).json(error.message); 
     }   
 }
+
+exports.addFilesToMedicalrecord=async (req,res)=>{ 
+    try{
+        const { medicalRecordId}=req.params;
+        const MedicalRecord = await medicalRecord.findById(medicalRecordId)
+        if (!MedicalRecord) {
+             return res.status(404).json({ message: "MedicalRecord not found" });
+            // throw new Error("Hospital not found");
+        }
+    
+   
+        if (req.file){ 
+            MedicalRecord.files.push(req.file.originalname);
+            MedicalRecord.save();
+
+        }
+        res.status(200).json({message:"files added"})
+    }catch(error){ 
+        res.status(500).json(error.message); 
+    }   
+}
+
 
 //DELETE MEDICAL RECORD 
 exports.deleteMedicalRecord=async (req ,res)=>{ 
@@ -120,6 +148,23 @@ exports.deleteFileOfMedicalRecord=async (req,res)=>{
         res.status(500).json(error.message);
     }
 }
+
+
+exports.findMedicalRecordById=async (req,res)=>{ 
+    try {
+        const { MedicalId } = req.params
+        const MedicalRecord = await medicalRecord.findById(MedicalId)
+        if (!MedicalRecord) {
+             return res.status(404).json({ message: "MedicalRecord not found" });
+            // throw new Error("Hospital not found");
+        }
+        res.status(200).json(MedicalRecord);
+    }
+    catch (error) {
+        res.status(500).json(error.message);
+    }
+}
+
 
 
 
