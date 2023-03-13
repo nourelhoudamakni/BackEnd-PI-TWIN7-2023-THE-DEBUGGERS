@@ -45,7 +45,7 @@ const  MedicalRecordSchema=new mongoose.Schema({
     },
     placeOfBirth:{ 
         type:String, 
-        enum:["Tunis","Bizerte"], 
+        enum:["Tunis", "Bizerte", "Nabeul", "Sfax"], 
         //required:true
     },
     bloodGroups:{ 

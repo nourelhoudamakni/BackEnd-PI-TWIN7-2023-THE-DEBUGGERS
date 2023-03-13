@@ -6,7 +6,6 @@ const nodemailer=require('nodemailer');
 const randomstring=require("randomstring");
 const bcryptjs = require('bcryptjs');
 const speakeasy=require('speakeasy');
-const bcrypt=require("bcrypt")
 require ('dotenv').config();
 
 //handle errors
@@ -113,7 +112,7 @@ const login_post=async(req,res)=>{
             if (!secret) {
                 await sendSecretByEmail(email, user.secret);
               
-                return res.status(200).json({ message: 'A new 2FA secret has been sent to your email',token });
+                return res.status(200).json({ message: 'A new 2FA secret has been sent to your email',token});
             } else if (secret!= user.secret) {
                 return res.status(401).send({
                     accessToken: null,
@@ -128,8 +127,8 @@ const login_post=async(req,res)=>{
 
     }
     catch(err){
-      const errors=handleErrors(err);
-      res.status(400).json({errors});
+        const errors=handleErrors(err);
+        res.status(400).json({errors});
     }
 }
 
@@ -201,7 +200,7 @@ const forget_password=async(req,res)=>{
             sendRestPasswordMail(userData.email,randomString);
             res.status(200).send({success:true,msg:"Please check your inbox of mail and reset your password."});
         }else{
-            res.status(200).send({success:true,msg:"this email does not exists"});
+            res.status(400).send({success:true,msg:"this email does not exists"});
         }
     }catch(error){
         res.status(400).send({success:false,msg:error.message})
@@ -220,9 +219,7 @@ const securePassword=async(password)=>{
 const reset_password = async (req, res) => {
     try {
       const token = req.params.token;
-      console.log(token)
       const tokenData = await User.findOne({ token:token });
-      console.log(tokenData)
       if (tokenData) {
         const password = req.body.password;
         const newPassword = await securePassword(password);
