@@ -103,7 +103,7 @@ const signUpFunction = async (req, res) => {
                                     phoneNumber,
                                     email,
                                     password: hashedPasswords,
-                                    dateOfBirth,
+                                    dateOfBirth: new Date(dateOfBirth),
                                     confirmed: false,
                                     role:'patient',
                                     code,
