@@ -67,7 +67,8 @@ const getHospitalById = async (req, res, next) => {
         const { hospitalId } = req.params
         const hospital = await HospitalModel.findById(hospitalId)
         if (!hospital) {
-            return res.status(404).json({ message: "Hospital not found" });
+             return res.status(404).json({ message: "Hospital not found" });
+            // throw new Error("Hospital not found");
         }
         res.status(200).json(hospital);
     }
