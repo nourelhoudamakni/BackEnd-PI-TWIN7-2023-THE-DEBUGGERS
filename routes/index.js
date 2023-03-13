@@ -62,7 +62,7 @@ router.get('/auth/google',
 
 // Callback route after successful authentication
 router.get('/auth/google/callback',
-passport.authenticate('google', { failureRedirect: '/login' }),
+passport.authenticate('google', { failureRedirect: 'http://localhost:3000/ErrorSignInPage' }),
 function(req, res) {
   // Successful authentication, redirect to profile page
   const token = req.user.token;
