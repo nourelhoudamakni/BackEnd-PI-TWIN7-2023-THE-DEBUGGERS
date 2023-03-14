@@ -2,9 +2,6 @@ const mongoose=require('mongoose');
 const {isEmail}=require('validator')  //isEmail mawjouda deja f west validator
 const bcrypt=require("bcrypt")
 
-
-
-
 const userSchema=new mongoose.Schema({
     userName:String,
     firstName:String,
@@ -60,6 +57,10 @@ userSchema.statics.login = async function (email, password) {
   
     if (!user.confirmed) {
       throw Error("email not confirmed!");
+    }
+
+    if(user.role==='doctor' && user.IsValidated==false){
+      throw Error("Sorry doctor ur not validated yet!");
     }
   
     const auth = await bcrypt.compare(password, user.password);
