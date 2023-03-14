@@ -2,7 +2,8 @@ const mongoose=require("mongoose");
 const medicalRecord=require('../models/MedicalRecord');
 const multer = require('multer');
 const user=require('../models/User'); 
-
+const path = require('path');
+const fs = require('fs');
 
 
 // UPLOADS FILES USING MULTER 
@@ -13,6 +14,7 @@ const storage = multer.diskStorage({
     filename: function (req, file, cb) {
       cb(null, file.originalname)
     }
+   
   });
   
 exports.upload = multer({ storage: storage }).array('file', 10);
@@ -103,20 +105,24 @@ exports.updateMedicalRecord=async (req,res)=>{
 
 exports.addFilesToMedicalrecord=async (req,res)=>{ 
     try{
-        const { medicalRecordId}=req.params;
-        const MedicalRecord = await medicalRecord.findById(medicalRecordId)
+        const  medicalRecordId=req.params.medicalRecordId;
+        const MedicalRecord = await medicalRecord.findById(medicalRecordId);
         if (!MedicalRecord) {
              return res.status(404).json({ message: "MedicalRecord not found" });
-            // throw new Error("Hospital not found");
+            
         }
-    
-   
-        if (req.file){ 
-            MedicalRecord.files.push(req.file.originalname);
+        
+        if (req.files && req.files.length > 0) {
+            req.files.forEach((file) => {
+              MedicalRecord.files.push(file.originalname);
+              
+            });
             MedicalRecord.save();
-
-        }
-        res.status(200).json({message:"files added"})
+            res.status(200).json(MedicalRecord);
+            
+          } else {
+            res.status(400).json({ message: "No files uploaded" });
+          }
     }catch(error){ 
         res.status(500).json(error.message); 
     }   
@@ -166,8 +172,37 @@ exports.findMedicalRecordById=async (req,res)=>{
 }
 
 
+// exports.finFileByname= async(req,res)=>{
+//     const fileName = req.query.filename;
 
+//     // Récupération du chemin d'accès complet au fichier
+//     const filePath = path.join(__dirname, 'uploads', fileName);
+  
+//     // Récupération des informations de fichier
+//     fs.stat(filePath, (err, stats) => {
+//       if (err) {
+//         res.status(404).json({ error: 'Fichier non trouvé' });
+//         return;
+//       }
+  
+//       // Création de l'objet de réponse
+//       const fileInfo = {
+//         filePath: filePath,
+//         fileSize: stats.size,
+//         fileType: mime.getType(filePath)
+//       };
+  
+//       // Envoi de la réponse JSON
+//       res.json(fileInfo);
+  
+  
+ 
+//   });
+// }
+exports.findFileByName=async(req,res)=>{ 
+    try{ 
+     const medicalRecordId=req.params.MedicalId; 
+    }catch(error){ 
 
-
-
-
+    }
+}

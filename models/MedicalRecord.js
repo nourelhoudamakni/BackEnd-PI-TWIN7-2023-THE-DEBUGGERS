@@ -68,17 +68,17 @@ const  MedicalRecordSchema=new mongoose.Schema({
     },
     category:{ 
         type:String, 
-        enum:["Temperature","Blood pressure","Heart rate","Respiratory rate","Oxygen_saturation","Pain"], 
+      //  enum:["Temperature","Blood pressure","Heart rate","Respiratory rate","Oxygen_saturation","Pain"], 
        // required:true
     },
     disease:{ 
         type:String, 
-        enum:["Hypertension","Hypotension","Fever","Tachycardia","Bradycardia","Respiratory diseases","Pain"],
+       // enum:["Hypertension","Hypotension","Fever","Tachycardia","Bradycardia","Respiratory diseases","Pain"],
        // required:true
     },
     allergies:{ 
         type:String, 
-        enum:["Anaphylaxis","Asthma","Allergic rhinitis","Food allergies"],
+       // enum:["Anaphylaxis","Asthma","Allergic rhinitis","Food allergies"],
       //  required:true
     },
     files:{ 
