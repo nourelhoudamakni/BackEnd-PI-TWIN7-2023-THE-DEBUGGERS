@@ -14,6 +14,7 @@ const storage = multer.diskStorage({
     filename: function (req, file, cb) {
       cb(null, file.originalname)
     }
+   
   });
   
 exports.upload = multer({ storage: storage }).array('file', 10);
@@ -104,19 +105,21 @@ exports.updateMedicalRecord=async (req,res)=>{
 
 exports.addFilesToMedicalrecord=async (req,res)=>{ 
     try{
-        const { medicalRecordId}=req.params;
-        const MedicalRecord = await medicalRecord.findById(medicalRecordId)
+        const  medicalRecordId=req.params.medicalRecordId;
+        const MedicalRecord = await medicalRecord.findById(medicalRecordId);
         if (!MedicalRecord) {
              return res.status(404).json({ message: "MedicalRecord not found" });
-            // throw new Error("Hospital not found");
+            
         }
         
         if (req.files && req.files.length > 0) {
             req.files.forEach((file) => {
               MedicalRecord.files.push(file.originalname);
+              
             });
             MedicalRecord.save();
             res.status(200).json(MedicalRecord);
+            
           } else {
             res.status(400).json({ message: "No files uploaded" });
           }
@@ -196,3 +199,10 @@ exports.findMedicalRecordById=async (req,res)=>{
  
 //   });
 // }
+exports.findFileByName=async(req,res)=>{ 
+    try{ 
+     const medicalRecordId=req.params.MedicalId; 
+    }catch(error){ 
+
+    }
+}
