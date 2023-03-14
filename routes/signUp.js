@@ -23,7 +23,7 @@ router.post('/', signUpFunction);
 router.get('/:token', async (req, res) => {
     try {
       const { user: { id } } = jwt.verify(req.params.token, EMAIL_SECRET);
-      res.cookie('jwt',req.params.token,{httpOnly:true,maxAge:maxAge*1000})
+     
   
       // Update the confirmed flag for the patient
       const patient = await Patient.findByIdAndUpdate(id, {
