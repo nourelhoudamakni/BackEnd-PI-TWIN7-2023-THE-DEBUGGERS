@@ -89,7 +89,8 @@ exports.updateMedicalRecord=async (req,res)=>{
     
         const updatedMedicalRecord=await medicalRecord.findByIdAndUpdate(medicalRecordId,req.body,{new:true}); 
         if(updatedMedicalRecord){
-            res.json(updatedMedicalRecord);
+            res.status(200).json(updatedMedicalRecord);
+            
         }
         
         if (req.file){ 
