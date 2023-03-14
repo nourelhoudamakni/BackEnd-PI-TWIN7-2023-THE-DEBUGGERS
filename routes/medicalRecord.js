@@ -4,8 +4,9 @@ const medicalRecordControlleur =require('../controllers/medicalRecordController'
 
 router.post("/add",medicalRecordControlleur.upload,medicalRecordControlleur.addMedicalRecord);
 router.put("/update/:medicalRecordId",medicalRecordControlleur.upload,medicalRecordControlleur.updateMedicalRecord); 
-router.post("/addFiles/:medicalRecordId",medicalRecordControlleur.upload,medicalRecordControlleur.addFilesToMedicalrecord)
+router.put("/addFiles/:medicalRecordId",medicalRecordControlleur.upload,medicalRecordControlleur.addFilesToMedicalrecord)
 router.delete("/delete/:medicalRecordId",medicalRecordControlleur.deleteMedicalRecord); 
 router.delete("/deleteMedicalDocument/:medicalRecordId/:fileName",medicalRecordControlleur.deleteFileOfMedicalRecord);
 router.get("/findMedicalRecordById/:MedicalId",medicalRecordControlleur.findMedicalRecordById)
+//router.get("/findFile",medicalRecordControlleur.finFileByname)
 module.exports = router;
