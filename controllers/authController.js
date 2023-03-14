@@ -11,7 +11,7 @@ require ('dotenv').config();
 //handle errors
 const handleErrors = (err) => {
     console.log(err.message, err.code);
-    let errors = { email: '', password: '', confirmed: '' };
+    let errors = { email: '', password: '', confirmed: '',validated: ''};
   
     // incorrect email
     if (err.message === "incorrect email") {
@@ -24,6 +24,11 @@ const handleErrors = (err) => {
     }
     
     // email not verified
+    else if (err.message === "Sorry doctor ur not validated yet!") {
+      errors.validated = "Sorry doctor ur not validated yet!";
+    }
+
+    // doctor not validated
     else if (err.message === "email not confirmed!") {
       errors.confirmed = "email not confirmed!";
     }
