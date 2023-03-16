@@ -67,7 +67,10 @@ function(req, res) {
   // Successful authentication, redirect to profile page
   const token = req.user.token;
   res.cookie('jwt', token, { maxAge: maxAge*1000 });
-  res.redirect('http://localhost:3000/home');
+ 
+  res.redirect('http://localhost:3000/');
+
+  
 });
 
 
