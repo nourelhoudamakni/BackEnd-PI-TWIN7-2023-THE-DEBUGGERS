@@ -69,7 +69,7 @@ function(req, res) {
   res.cookie('jwt', token, { maxAge: maxAge*1000 });
  
   res.redirect('http://localhost:3000/');
-
+  
   
 });
 
@@ -80,6 +80,11 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser((user, done) => {
   done(null, user);
+});
+
+app.post('/homeReload', (req, res) => {
+  // Your server-side code here
+  res.redirect('http://localhost:3000/');
 });
 
 module.exports = router;
