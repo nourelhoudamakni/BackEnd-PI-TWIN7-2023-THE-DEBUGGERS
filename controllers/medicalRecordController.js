@@ -114,7 +114,7 @@ exports.addFilesToMedicalrecord=async (req,res)=>{
         }
         
         if (req.files && req.files.length > 0) {
-            req.files.forEach((file) => {
+            req.files.forEach((CDfile) => {
               MedicalRecord.files.push(file.originalname);
               
             });
