@@ -12,7 +12,7 @@ router.get('/', function (req, res, next) {
   res.send('<a href="/auth/google"> Authenticate using google</a>');
 });
 const jwt = require('jsonwebtoken');
-const maxAge= 3 * 24 * 60 * 60 
+const maxAge=30*60
 
 function generateToken(user) {
   const payload = {
@@ -22,7 +22,7 @@ function generateToken(user) {
     // Ajoutez d'autres propriétés que vous souhaitez inclure dans le token
   };
   const secret = 'my_secret_key'; // Remplacez par votre propre clé secrète
-  const options = { expiresIn: '1h' }; // Définissez la durée de vie du token
+  const options = { expiresIn: '30m' }; // Définissez la durée de vie du token
 
   return jwt.sign(payload, secret, options);
 };
