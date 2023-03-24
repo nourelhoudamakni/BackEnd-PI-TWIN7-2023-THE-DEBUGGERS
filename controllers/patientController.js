@@ -30,15 +30,21 @@ exports.sendSms=async(req,res)=>{
         const code = crypto.randomInt(1000000);
         userNumber.code=code; 
         await userNumber.save();
+        setTimeout(expirationCode=()=>{ 
+            userNumber.code=""; 
+            userNumber.save(); 
+        }, 29999);
         client.messages.create({ 
             body:`Your OTP is ${code}`, 
             from:process.env.PHONE_NUMBER_TWILIO,
-            to:`${phone}`
+            to:`+${phone}`
         }).then(res.json(console.log(code)))
+      
     }catch(error){ 
         res.status(500).json(error.message);
     }
 }
+
 
 //Receive : mobile verification : 
 exports.verifNumber=async(req,res)=>{ 
