@@ -81,10 +81,27 @@ const  MedicalRecordSchema=new mongoose.Schema({
        // enum:["Anaphylaxis","Asthma","Allergic rhinitis","Food allergies"],
       //  required:true
     },
-    files:{ 
+
+    ImagingReports:{ 
         type:[String],
       //  required:true
     },
+
+    LaboratoryReports:{
+        type:[String],
+    },
+
+    MedicalHistory:{
+        type:[String],
+    },
+
+    InsuranceClaims:{
+        type:[String],
+    },
+
+
+
+
     phoneNumber:{ 
         type:String, 
         //required:true
