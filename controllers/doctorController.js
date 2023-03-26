@@ -8,6 +8,9 @@ require('dotenv').config();
 const accountSid = process.env.ACCOUNT_SID_TWILIO;
 const authToken = process.env.AUTH_TOKEN_TWILIO;
  const client = require('twilio')(accountSid, authToken);
+ const Appointment = require('../models/Appointment');
+ const Doctor = require('../models/Doctor');
+
 
 
 
@@ -92,4 +95,39 @@ exports.updateUserPassword=async(req,res)=>{
     }catch(err){ 
         res.status(500).json(err.message);
     }
+}
+
+
+
+exports.getDoctorAppointmentsWithLeastPatients= async (req,res) => {
+  try {
+    const serviceId=req.params.serviceId; 
+    const appointments = await Appointment.find({ 'Patient': { $ne: null }, 'HospitalService': serviceId })
+      .populate('Doctor')
+      .exec();
+      if (appointments.length === 0) {
+        throw new Error('No appointments found with the given serviceId');
+      }
+    const doctorCounts = appointments.reduce((acc, appointment) => {
+      const doctorId = appointment.Doctor._id.toString();
+      if (!acc.hasOwnProperty(doctorId)) {
+        acc[doctorId] = 0;
+      }
+      acc[doctorId]++;
+      return acc;
+    }, {});
+    const doctorsSorted = Object.keys(doctorCounts).sort((a, b) => doctorCounts[a] - doctorCounts[b]);
+    const doctor = await Doctor.findById(doctorsSorted[0]).populate({
+      path: 'Appointments',
+      match: { 'Patient': null , 'HospitalService': serviceId }
+    }).exec();
+    if (!doctor) {
+        throw new Error('No doctor found with the least number of appointments');
+      }
+    res.status(200).json(doctor.Appointments);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to get doctor appointments with least patients.' });
+
+  }
 }

@@ -5,4 +5,6 @@ const doctorController =require('../controllers/doctorController');
  router.post("/verifSms/:userId",doctorController.verifNumber);
 router.put("/updateDoctor/:userId",doctorController.updateDoctor);
 router.put("/updatePasswordDoctor/:userId",doctorController.updateUserPassword);
+router.get("/getDoctorAppointmentsWithLeastPatients/:serviceId", doctorController.getDoctorAppointmentsWithLeastPatients);
+
 module.exports = router;
