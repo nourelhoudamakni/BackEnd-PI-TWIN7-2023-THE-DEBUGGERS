@@ -6,5 +6,5 @@ const doctorController =require('../controllers/doctorController');
 router.put("/updateDoctor/:userId",doctorController.updateDoctor);
 router.put("/updatePasswordDoctor/:userId",doctorController.updateUserPassword);
 router.get("/getDoctorAppointmentsWithLeastPatients/:serviceId", doctorController.getDoctorAppointmentsWithLeastPatients);
-
+router.get("/getAvailableAppointments/:serviceId",doctorController.getAvailableAppointments);
 module.exports = router;
