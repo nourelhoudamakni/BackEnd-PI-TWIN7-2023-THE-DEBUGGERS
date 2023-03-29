@@ -4,6 +4,10 @@ const path =require('path');
 const user=require('../models/User'); 
 const bcrypt = require('bcrypt');
 const express = require('express');
+const Hospital = require("../models/Hospital");
+const HospitalService = require("../models/HospitalService");
+const Appointment = require("../models/Appointment");
+
 require('dotenv');
  var client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 //update patient profile 
@@ -102,3 +106,58 @@ exports.getUserById=async(req,res)=>{
         res.status(500).json(err.message);
     }
 }
+
+
+//getHospitals List
+exports.getHospitals=async(req,res)=>{
+    try{
+        const hospitals=await Hospital.find();
+        res.json(hospitals);
+    }catch(err){
+        res.status(500).json({message:err.message});
+    }
+}
+
+//getHospitalService List
+exports.getHospitalServicesByHospitalId= async(req,res)=>{
+    const {hospitalId}=req.params;
+    try{
+        const services=await HospitalService.find({Hospital:hospitalId});
+        res.json(services);
+    }catch(err){
+        res.status(500).json({message:err.message});
+    }
+}
+
+//getAppointments List
+exports.getAppointmentsByHospitalServicesId= async(req,res)=>{
+    const {hospitalServiceId}=req.params;
+    try{
+        const appointments=await Appointment.find({HospitalService:hospitalServiceId});
+        res.json(appointments);
+    }catch(err){
+        res.status(500).json({message:err.message})
+    }
+}
+
+//takeAppointment
+exports.takeAppointment= async(req,res)=>{
+    const { appointmentId } = req.params;
+    const {patientId}=req.body;  //patient id recepurer depuis local storge
+
+    try{
+        const appointment= await Appointment.findById(appointmentId);
+        if(!appointment){
+            return res.status(404).json({message:"Appointment not found"})
+        }
+        appointment.Patient=patientId;
+        await appointment.save();
+        res.json(appointment);
+    }catch(err){
+        res.status(500).json({message:err.message});
+    }
+}
+
+
+
+
