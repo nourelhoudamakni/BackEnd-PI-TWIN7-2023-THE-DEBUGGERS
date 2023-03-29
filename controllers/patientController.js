@@ -7,7 +7,7 @@ const express = require('express');
 const Hospital = require("../models/Hospital");
 const HospitalService = require("../models/HospitalService");
 const Appointment = require("../models/Appointment");
-
+const Patient = require("../models/Patient");
 require('dotenv');
  var client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 //update patient profile 
@@ -148,13 +148,13 @@ exports.getAppointmentsByHospitalServicesId= async(req,res)=>{
 //takeAppointment
 exports.takeAppointment= async(req,res)=>{
     const { appointmentId } = req.params;
-    const {patientId}=req.body;  //patient id recepurer depuis local storge
+    const { patientId } = req.body;
 
     try{
         const appointment= await Appointment.findById(appointmentId);
         if(!appointment){
             return res.status(404).json({message:"Appointment not found"})
-        }
+        }  
         appointment.Patient=patientId;
         await appointment.save();
         res.json(appointment);
