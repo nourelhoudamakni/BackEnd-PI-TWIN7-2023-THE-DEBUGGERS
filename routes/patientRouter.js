@@ -17,5 +17,10 @@ router.get('/hospitals',getHospitals);
 router.get('/services/:hospitalId',getHospitalServicesByHospitalId);
 router.get('/appointments/:hospitalServiceId',getAppointmentsByHospitalServicesId);
 router.put('/appointments/:appointmentId/take',takeAppointment);
-
+router.post("/addAppointment/:idPatient",patientControlleur.addAppointments);
+router.get("/getAppointment/:idPatient",patientControlleur.getAppointmentByIdPatient);
+router.get("/searchAppointment",patientControlleur.searchForAppointmentByTitle);
+router.get("/sortAppointment",patientControlleur.sortForAppointment);
+router.delete("/deleteAppointment/:idPatient",patientControlleur.deleteAppointmentFromPatient);
+router.get("/notification/:idPatient",patientControlleur.notificationBeforeTheAppointment);
 module.exports = router;
