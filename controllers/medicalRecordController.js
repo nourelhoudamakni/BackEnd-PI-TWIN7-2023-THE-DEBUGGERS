@@ -7,9 +7,10 @@ const fs = require('fs');
 
 
 // UPLOADS FILES USING MULTER 
-const storage = multer.diskStorage({
+// Upload ImagingReports
+const storageImagingReports = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, 'uploads')
+      cb(null, 'uploads/ImagingReports')
     },
     filename: function (req, file, cb) {
       cb(null, file.originalname)
@@ -17,7 +18,53 @@ const storage = multer.diskStorage({
    
   });
   
-exports.upload = multer({ storage: storage }).array('file', 10);
+exports.ImagingReports = multer({ storage: storageImagingReports }).array('file', 10);
+
+// Upload LaboratoryReports
+const storageLaboratoryReports = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads/LaboratoryReports')
+    },
+    filename: function (req, file, cb) {
+      cb(null, file.originalname)
+    }
+   
+  });
+  
+exports.LaboratoryReports = multer({ storage: storageLaboratoryReports }).array('file', 10);
+
+
+// Upload MedicalHistory
+const storageMedicalHistory = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads/MedicalHistory')
+    },
+    filename: function (req, file, cb) {
+      cb(null, file.originalname)
+    }
+   
+  });
+  
+exports.MedicalHistory = multer({ storage: storageMedicalHistory }).array('file', 10);
+
+
+
+// Upload InsuranceClaims
+const storageInsuranceClaims = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads/InsuranceClaims')
+    },
+    filename: function (req, file, cb) {
+      cb(null, file.originalname)
+    }
+   
+  });
+  
+exports.InsuranceClaims = multer({ storage: storageInsuranceClaims }).array('file', 10);
+
+
+
+
 
 
 //ADD MEDICAL RECORD FUNCTION 
@@ -103,8 +150,8 @@ exports.updateMedicalRecord=async (req,res)=>{
         res.status(500).json(error.message); 
     }   
 }
-
-exports.addFilesToMedicalrecord=async (req,res)=>{ 
+///ADD FILES to imaging reports  :
+exports.addFilesToImaginReports=async (req,res)=>{ 
     try{
         const  medicalRecordId=req.params.medicalRecordId;
         const MedicalRecord = await medicalRecord.findById(medicalRecordId);
@@ -114,8 +161,8 @@ exports.addFilesToMedicalrecord=async (req,res)=>{
         }
         
         if (req.files && req.files.length > 0) {
-            req.files.forEach((CDfile) => {
-              MedicalRecord.files.push(file.originalname);
+            req.files.forEach((file) => {
+              MedicalRecord.ImagingReports.push(file.originalname);
               
             });
             MedicalRecord.save();
@@ -130,6 +177,88 @@ exports.addFilesToMedicalrecord=async (req,res)=>{
 }
 
 
+///ADD FILES to laboratory reports  :
+exports.addFilesToLaboratoryReports=async (req,res)=>{ 
+    try{
+        const  medicalRecordId=req.params.medicalRecordId;
+        const MedicalRecord = await medicalRecord.findById(medicalRecordId);
+        if (!MedicalRecord) {
+             return res.status(404).json({ message: "MedicalRecord not found" });
+            
+        }
+        
+        if (req.files && req.files.length > 0) {
+            req.files.forEach((file) => {
+              MedicalRecord.LaboratoryReports.push(file.originalname);
+              
+            });
+            MedicalRecord.save();
+            res.status(200).json(MedicalRecord);
+            
+          } else {
+            res.status(400).json({ message: "No files uploaded" });
+          }
+    }catch(error){ 
+        res.status(500).json(error.message); 
+    }   
+}
+
+
+///ADD FILES to  medical history  :
+exports.addFilesToMedicalHistory=async (req,res)=>{ 
+    try{
+        const  medicalRecordId=req.params.medicalRecordId;
+        const MedicalRecord = await medicalRecord.findById(medicalRecordId);
+        if (!MedicalRecord) {
+             return res.status(404).json({ message: "MedicalRecord not found" });
+            
+        }
+        
+        if (req.files && req.files.length > 0) {
+            req.files.forEach((file) => {
+              MedicalRecord.MedicalHistory.push(file.originalname);
+              
+            });
+            MedicalRecord.save();
+            res.status(200).json(MedicalRecord);
+            
+          } else {
+            res.status(400).json({ message: "No files uploaded" });
+          }
+    }catch(error){ 
+        res.status(500).json(error.message); 
+    }   
+}
+
+///ADD FILES to  insurance  claims  :
+exports.addFilesToInsuranceClaims=async (req,res)=>{ 
+    try{
+        const  medicalRecordId=req.params.medicalRecordId;
+        const MedicalRecord = await medicalRecord.findById(medicalRecordId);
+        if (!MedicalRecord) {
+             return res.status(404).json({ message: "MedicalRecord not found" });
+            
+        }
+        
+        if (req.files && req.files.length > 0) {
+            req.files.forEach((file) => {
+              MedicalRecord.InsuranceClaims.push(file.originalname);
+              
+            });
+            MedicalRecord.save();
+            res.status(200).json(MedicalRecord);
+            
+          } else {
+            res.status(400).json({ message: "No files uploaded" });
+          }
+    }catch(error){ 
+        res.status(500).json(error.message); 
+    }   
+}
+
+
+
+
 //DELETE MEDICAL RECORD 
 exports.deleteMedicalRecord=async (req ,res)=>{ 
     try{ 
@@ -142,13 +271,27 @@ exports.deleteMedicalRecord=async (req ,res)=>{
 } 
  
 // DELETE FILES : 
-exports.deleteFileOfMedicalRecord=async (req,res)=>{ 
+exports.deleteFileOfImagingReports=async (req,res)=>{ 
     try{ 
         const {fileName}=req.params;
         const {medicalRecordId}=req.params; 
         const medicalRecordOfFile=await medicalRecord.findById(medicalRecordId);
-        const updatedFiles=medicalRecordOfFile.files.filter(file=>file!=fileName);
-        medicalRecordOfFile.files=updatedFiles; 
+        const updatedFiles=medicalRecordOfFile.ImagingReports.filter(file=>file!=fileName);
+        medicalRecordOfFile.ImagingReports=updatedFiles; 
+        medicalRecordOfFile.save();       
+        res.json("file deleted successfully !")
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
+}
+
+exports.deleteFileOflaboratoryReports=async (req,res)=>{ 
+    try{ 
+        const {fileName}=req.params;
+        const {medicalRecordId}=req.params; 
+        const medicalRecordOfFile=await medicalRecord.findById(medicalRecordId);
+        const updatedFiles=medicalRecordOfFile.LaboratoryReports.filter(file=>file!=fileName);
+        medicalRecordOfFile.LaboratoryReports=updatedFiles; 
         medicalRecordOfFile.save();       
         res.json("file deleted successfully !")
     } catch (error) {
@@ -157,6 +300,36 @@ exports.deleteFileOfMedicalRecord=async (req,res)=>{
 }
 
 
+exports.deleteFileOfMedicalHistory=async (req,res)=>{ 
+    try{ 
+        const {fileName}=req.params;
+        const {medicalRecordId}=req.params; 
+        const medicalRecordOfFile=await medicalRecord.findById(medicalRecordId);
+        const updatedFiles=medicalRecordOfFile.MedicalHistory.filter(file=>file!=fileName);
+        medicalRecordOfFile.MedicalHistory=updatedFiles; 
+        medicalRecordOfFile.save();       
+        res.json("file deleted successfully !")
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
+}
+
+
+exports.deleteFileOfInsuranceClaims=async (req,res)=>{ 
+    try{ 
+        const {fileName}=req.params;
+        const {medicalRecordId}=req.params; 
+        const medicalRecordOfFile=await medicalRecord.findById(medicalRecordId);
+        const updatedFiles=medicalRecordOfFile.InsuranceClaims.filter(file=>file!=fileName);
+        medicalRecordOfFile.InsuranceClaims=updatedFiles; 
+        medicalRecordOfFile.save();       
+        res.json("file deleted successfully !")
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
+}
+
+////////////////////////////////////////////////
 exports.findMedicalRecordById=async (req,res)=>{ 
     try {
         const { MedicalId } = req.params
@@ -173,33 +346,7 @@ exports.findMedicalRecordById=async (req,res)=>{
 }
 
 
-// exports.finFileByname= async(req,res)=>{
-//     const fileName = req.query.filename;
 
-//     // Récupération du chemin d'accès complet au fichier
-//     const filePath = path.join(__dirname, 'uploads', fileName);
-  
-//     // Récupération des informations de fichier
-//     fs.stat(filePath, (err, stats) => {
-//       if (err) {
-//         res.status(404).json({ error: 'Fichier non trouvé' });
-//         return;
-//       }
-  
-//       // Création de l'objet de réponse
-//       const fileInfo = {
-//         filePath: filePath,
-//         fileSize: stats.size,
-//         fileType: mime.getType(filePath)
-//       };
-  
-//       // Envoi de la réponse JSON
-//       res.json(fileInfo);
-  
-  
- 
-//   });
-// }
 exports.findFileByName=async(req,res)=>{ 
     try{ 
      const medicalRecordId=req.params.MedicalId; 
@@ -207,3 +354,27 @@ exports.findFileByName=async(req,res)=>{
 
     }
 }
+
+///////////////////////////download files 
+exports.downloadFile = async (req, res) => {
+    try {
+      const { fileName } = req.params;
+      const filePath = path.join(__dirname, '..', 'uploads','ImagingReports', fileName);
+      console.log(filePath)
+      // Check if file exists
+      if (!fs.existsSync(filePath)) {
+        return res.status(404).json({ message: 'File not found' });
+      }
+      
+      // Set headers
+      res.setHeader('Content-Type', 'application/octet-stream');
+      res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+      res.setHeader('Content-Transfer-Encoding', 'binary');
+  
+      // Create read stream and pipe to response
+      const fileStream = fs.createReadStream(filePath);
+      fileStream.pipe(res);
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  };

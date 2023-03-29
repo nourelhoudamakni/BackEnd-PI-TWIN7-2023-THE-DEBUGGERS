@@ -140,7 +140,7 @@ const signUpFunction = async (req, res) => {
                                         },
                                         EMAIL_SECRET,
                                         {
-                                            expiresIn: '1d',
+                                            expiresIn: '30m',
                                         }
                                     );
                                 } catch (error) {
@@ -251,7 +251,7 @@ const signUpFunction = async (req, res) => {
                                         },
                                         EMAIL_SECRET,
                                         {
-                                            expiresIn: '1d',
+                                            expiresIn: '30m',
                                         }
                                     );
                                 } catch (error) {
