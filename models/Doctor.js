@@ -5,7 +5,7 @@ const Schema=mongoose.Schema;
 
 const DoctorSchema = new mongoose.Schema({
     WorkTime:{
-    type:[Date]     
+    type:[Date] ,    
     },
     IsValidated:{
       type:Boolean,
