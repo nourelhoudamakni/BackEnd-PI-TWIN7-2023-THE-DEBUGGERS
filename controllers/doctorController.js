@@ -215,3 +215,63 @@ exports.validateAppointment = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 }
+
+exports.getAvailableAppointments = async (req, res) => {
+  try {
+    const serviceId = req.params.serviceId;
+    const appointments = await Appointment.find({ 'Patient': null, 'HospitalService': serviceId }).exec();
+    if (appointments.length === 0) {
+      throw new Error('No appointments found with the given serviceId ');
+    }
+    res.status(200).json(appointments);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to get appointments ' });
+  }
+}
+
+
+exports.getDoctorAppointmentsWithLeastPatients= async (req,res) => {
+  try {
+    const serviceId=req.params.serviceId; 
+    const appointments = await Appointment.find({ 'Patient': { $ne: null }, 'HospitalService': serviceId })
+      .populate('Doctor')
+      .exec();
+      if (appointments.length === 0) {
+        throw new Error('No appointments found with the given serviceId');
+      }
+    const doctorCounts = appointments.reduce((acc, appointment) => {
+      const doctorId = appointment.Doctor._id.toString();
+      if (!acc.hasOwnProperty(doctorId)) {
+        acc[doctorId] = 0;
+      }
+      acc[doctorId]++;
+      return acc;
+    }, {});
+    const doctorsSorted = Object.keys(doctorCounts).sort((a, b) => doctorCounts[a] - doctorCounts[b]);
+    let i = 0;
+    let doctor = null;
+    let doctorAppointments = null;
+    while (i < doctorsSorted.length && !doctorAppointments) {
+      doctor = await Doctor.findById(doctorsSorted[i]).populate({
+        path: 'Appointments',
+        match: { 'Patient': null, 'HospitalService': serviceId }
+      }).exec();
+      if (doctor.Appointments.length > 0) {
+        doctorAppointments = doctor.Appointments;
+      }
+      i++;
+    }
+
+    if (!doctorAppointments) {
+      throw new Error('No doctor found with available appointments');
+    }
+
+    res.status(200).json(doctorAppointments);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to get doctor appointments with least patients.' });
+
+  }
+}
+
