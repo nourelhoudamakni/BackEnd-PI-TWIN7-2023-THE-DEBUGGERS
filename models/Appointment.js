@@ -22,6 +22,10 @@ const AppointmentSchema=new mongoose.Schema({
     Hospital:{
         type:Schema.Types.ObjectId,
         ref:"Hospital"
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
     }
 });
 

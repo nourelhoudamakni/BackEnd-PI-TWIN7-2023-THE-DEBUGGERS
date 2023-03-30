@@ -18,6 +18,7 @@ var HospitalRouter=require('./routes/Hospital');
 var serviceRouter = require('./routes/service');
 var adminRouter = require('./routes/adminDash');
 var indexRouter=require('./routes/index');
+var appointmentRouter=require('./routes/AppointmentRoute');
 const session = require('express-session');
 const cors = require('cors');
 
@@ -75,6 +76,7 @@ app.use('/doctor', doctorRouter);
 app.use('/hospital',HospitalRouter);
 app.use('/service', serviceRouter);
 app.use('/admin', adminRouter );
+app.use('/appointment',appointmentRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
