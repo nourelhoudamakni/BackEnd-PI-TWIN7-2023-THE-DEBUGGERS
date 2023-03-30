@@ -95,7 +95,7 @@ const GetAppointmentsByDoctorId = async (req, res, next) => {
         if (!id) {
             throw new Error('No doctor ID inserted');
         }
-        const appointments = await Appointment.find({ Doctor: id, Patient: { $ne: null } });
+        const appointments = await Appointment.find({ Doctor: id});
         if (appointments.length === 0) {
             throw new Error('No appointments found');
         }

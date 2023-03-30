@@ -4,6 +4,7 @@ const path =require('path');
 const user=require('../models/User'); 
 const bcrypt = require('bcrypt');
 const express = require('express');
+const Doctor = require("../models/Doctor");
 require('dotenv').config();
 const accountSid = process.env.ACCOUNT_SID_TWILIO;
 const authToken = process.env.AUTH_TOKEN_TWILIO;
@@ -92,4 +93,20 @@ exports.updateUserPassword=async(req,res)=>{
     }catch(err){ 
         res.status(500).json(err.message);
     }
+    
+}
+exports.updateDoctorService=async(req,res)=>{ 
+    const doctorId = req.params.userId;
+    const doctor = await Doctor.findById(doctorId);
+    if (doctor.Service) {
+      res.status(400).json({ message: 'Doctor already has a service assigned' });
+      return;
+    }
+    const serviceId = req.params.serviceId;
+    const updateDoctor = await Doctor.findByIdAndUpdate(doctorId, {
+      $set: { Service: serviceId },
+    }, { new: true });
+    
+    res.json(updateDoctor);
+    
 }
