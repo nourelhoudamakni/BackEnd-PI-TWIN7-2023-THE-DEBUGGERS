@@ -257,7 +257,7 @@ exports.getDoctorAppointmentsWithLeastPatients= async (req,res) => {
         path: 'Appointments',
         match: { 'Patient': null, 'HospitalService': serviceId }
       }).exec();
-      if (doctor.Appointments.length > 0) {
+      if (doctor && doctor.Appointments.length > 0) {
         doctorAppointments = doctor.Appointments;
       }
       i++;
