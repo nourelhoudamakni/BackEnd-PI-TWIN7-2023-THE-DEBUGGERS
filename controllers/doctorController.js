@@ -3,6 +3,7 @@ const medicalRecord = require('../models/MedicalRecord');
 const path = require('path');
 const user = require('../models/User');
 const bcrypt = require('bcrypt');
+const Doctor=require('../models/Doctor');
 const express = require('express');
 const nodemailer = require('nodemailer');
 const Appointment = require("../models/Appointment");
@@ -214,4 +215,20 @@ exports.validateAppointment = async (req, res) => {
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
+}
+
+exports.updateDoctorService=async(req,res)=>{ 
+    const doctorId = req.params.userId;
+    const doctor = await Doctor.findById(doctorId);
+    if (doctor.Service) {
+      res.status(400).json({ message: 'Doctor already has a service assigned' });
+      return;
+    }
+    const serviceId = req.params.serviceId;
+    const updateDoctor = await Doctor.findByIdAndUpdate(doctorId, {
+      $set: { Service: serviceId },
+    }, { new: true });
+    
+    res.json(updateDoctor);
+    
 }
