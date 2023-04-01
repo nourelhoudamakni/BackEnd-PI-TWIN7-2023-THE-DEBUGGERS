@@ -17,4 +17,8 @@ router.get("/appointments", getAppointments);
 router.get("/appointments/:appointmentId", getAppointmentById);
 router.put("/appointments/:appointmentId", updateAppointment);
 router.put("/appointments/:appointmentId/verifie", validateAppointment);
+
+
+router.get("/getDoctorAppointmentsWithLeastPatients/:serviceId", doctorController.getDoctorAppointmentsWithLeastPatients);
+router.get("/getAvailableAppointments/:serviceId",doctorController.getAvailableAppointments);
 module.exports = router;
