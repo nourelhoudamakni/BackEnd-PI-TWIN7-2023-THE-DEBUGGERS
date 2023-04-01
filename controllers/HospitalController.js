@@ -53,7 +53,7 @@ const getAllHospitals = async (req, res, next) => {
             return res.status(404).json({ message: "Hospitals not found" });
         }
         if (hospitals.length === 0) {
-            return res.status(404).json({ message: "Hlist of hospitals is empty !" });
+            return res.status(404).json({ message: "list of hospitals is empty !" });
         }
         res.status(200).json(hospitals);
 
@@ -81,12 +81,12 @@ const getHospitalById = async (req, res, next) => {
 const updateHospital = async (req, res, next) => {
     try {
         const { hospitalId } = req.params;
-        const { AdminEmail, OldPasswordAdmin, PasswordAdmin, confirmPasswordAdmin, HospitalName, HospitalAddress, PhoneNumber } = req.body;
+        const { AdminEmail,HospitalName, HospitalAddress, PhoneNumber } = req.body;
 
 
 
         /////verifier si les parametres sont presents dans req.body
-        if (!AdminEmail || !OldPasswordAdmin || !PasswordAdmin || !confirmPasswordAdmin || !HospitalName || !HospitalAddress || !PhoneNumber) {
+        if (!AdminEmail  || !HospitalName || !HospitalAddress || !PhoneNumber) {
             return res.status(400).json({ message: "Missing required fields" });
         }
 
@@ -95,26 +95,20 @@ const updateHospital = async (req, res, next) => {
             return res.status(404).json({ message: "hospistal not found !" });
         }
 
-        const isOldPasswordCorrect = await bcrypt.compare(OldPasswordAdmin, Hospital.PasswordAdmin);
-        if (!isOldPasswordCorrect) {
-            return res.status(401).json({ message: "Incorrect old password !" });
+        if(Hospital.AdminEmail!==AdminEmail)
+        {
+            const existingHospital = await HospitalModel.findOne({ AdminEmail: AdminEmail });
+            if(existingHospital){
+                return res.status(500).json({ message: "email already exist!" });
+            }
         }
 
-
-        if (PasswordAdmin !== confirmPasswordAdmin) {
-            return res.status(400).json({ message: "Wrong password confirmation !" });
-        }
-        const salt = await bcrypt.genSalt(10);
-        const hashedPasswordAdmin = await bcrypt.hash(PasswordAdmin, salt);
-
-
-
+    
         const updateHospital = await HospitalModel.findByIdAndUpdate(
             hospitalId,
             {
                 $set: {
                     AdminEmail,
-                    PasswordAdmin: hashedPasswordAdmin,
                     HospitalName,
                     HospitalAddress,
                     PhoneNumber
@@ -124,7 +118,7 @@ const updateHospital = async (req, res, next) => {
 
         )
         if (!updateHospital) {
-            return res.status(400).json({ message: `Hospital not found with id ${hospitalId}` });
+            return res.status(400).json({ message: "error while adding Hospital in the DB!" });
         }
 
         res.status(200).json(updateHospital);
@@ -135,6 +129,60 @@ const updateHospital = async (req, res, next) => {
 
 
 };
+
+
+const updatePasswordHospital=async (req,res,next)=>{
+    try {
+        const { hospitalId } = req.params;
+        const { OldPasswordAdmin, PasswordAdmin, confirmPasswordAdmin} = req.body;
+
+
+            /////verifier si les parametres sont presents dans req.body
+        if (!OldPasswordAdmin || !PasswordAdmin || !confirmPasswordAdmin ) {
+        return res.status(400).json({ message: "Missing required fields" });
+         }
+
+         const Hospital = await HospitalModel.findById(hospitalId)
+         if (!Hospital) {
+             return res.status(404).json({ message: "hospistal not found !" });
+         }
+
+         const isOldPasswordCorrect = await bcrypt.compare(OldPasswordAdmin, Hospital.PasswordAdmin);
+         if (!isOldPasswordCorrect) {
+             return res.status(401).json({ error: "Incorrect old password !" });
+         }
+ 
+ 
+         if (PasswordAdmin !== confirmPasswordAdmin) {
+             return res.status(400).json({ error: "Wrong password confirmation !" });
+         }
+         const salt = await bcrypt.genSalt(10);
+         const hashedPasswordAdmin = await bcrypt.hash(PasswordAdmin, salt);
+         const updateHospital = await HospitalModel.findByIdAndUpdate(
+            hospitalId,
+            {
+                $set: {
+                   
+                    PasswordAdmin: hashedPasswordAdmin,
+                    
+                },
+            },
+            { new: true }
+
+        )
+        if (!updateHospital) {
+            return res.status(400).json({ message: "error while adding Hospital in the DB!" });
+        }
+
+        res.status(200).json(updateHospital);
+
+
+    } 
+    catch (error) {
+        res.status(500).json(error.message);
+    }
+
+}
 
 
 
@@ -196,7 +244,7 @@ async function calculerNbrHopitaux(req, res, next) {
 };
 
 
-async function countCompalintsByHospital(req, res, next) {
+async function countComplaintsByHospital(req, res, next) {
     try {
         const aggResult = await HospitalModel.aggregate([
             {
@@ -277,9 +325,10 @@ module.exports = {
     getAllHospitals,
     getHospitalById,
     calculerNbrHopitaux,
-    countCompalintsByHospital,
+    countComplaintsByHospital,
     hospitalAvecPlusDeRendezVous,
     searchByHospitalName,
+    updatePasswordHospital,
 
 }
 

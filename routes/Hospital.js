@@ -9,21 +9,27 @@ const
     getAllHospitals,
     getHospitalById,
     calculerNbrHopitaux,
-    countCompalintsByHospital,
+    countComplaintsByHospital,
     hospitalAvecPlusDeRendezVous,
     searchByHospitalName,
+    updatePasswordHospital,
 }=require("../controllers/HospitalController")
 
 
   
 router.post('/addHospitalwithAdmin',validateHospital,addHospitalWithAdmin)
+///////////////////////////////////////////////
 router.get('/getAllHospitals',getAllHospitals)
 router.get('/getHospitalById/:hospitalId',getHospitalById)
 router.get('/countHospitals',calculerNbrHopitaux)
 router.get('/searchByHospitalName/:nameHospital',searchByHospitalName)
 router.get('/hospitalAvecPlusDeRendezVous',hospitalAvecPlusDeRendezVous)
-router.get('/countCompalintsByHospital',countCompalintsByHospital)
-router.put('/updateHospital/:hospitalId',validateHospitalwhenUpdate,updateHospital)
+router.get('/countComplaintsByHospital',countComplaintsByHospital)
+//////////////////////////////////////////////////
+router.put('/updateHospital/:hospitalId',updateHospital)
+router.put('/updatePasswordHospital/:hospitalId',updatePasswordHospital)
+
+//////////////////////////////////////////////////
 router.delete('/deleteHospital/:hospitalId',deleteHospital)
 
 module.exports=router;

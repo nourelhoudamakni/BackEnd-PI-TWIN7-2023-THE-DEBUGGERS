@@ -12,6 +12,7 @@ const SuperAdminSchema=new mongoose.Schema({
     {
         type: String,
     }
+    
    
 });
 const SuperAdmin=mongoose.Model("SuperAdmin",SuperAdminSchema);
