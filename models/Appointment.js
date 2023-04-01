@@ -2,8 +2,6 @@ const mongoose=require("mongoose");
 const Schema=mongoose.Schema;
 
 const AppointmentSchema=new mongoose.Schema({
-    FirstNamePatient:String,
-    LastNamePatient:String,
     Titre:String,
     Date:Date,
     Heure:String,
@@ -21,9 +19,13 @@ const AppointmentSchema=new mongoose.Schema({
         type:Schema.Types.ObjectId,
         ref:"Doctor"
     },
-    Hospial:{
+    Hospital:{
         type:Schema.Types.ObjectId,
         ref:"Hospital"
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
     }
 });
 
