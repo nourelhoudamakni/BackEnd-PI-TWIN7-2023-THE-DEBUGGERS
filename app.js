@@ -17,6 +17,7 @@ const signUpRouter=require('./routes/signUp');
 var HospitalRouter=require('./routes/Hospital');
 var serviceRouter = require('./routes/service');
 var adminRouter = require('./routes/adminDash');
+var prescritionRouter=require('./routes/prescription')
 var indexRouter=require('./routes/index');
 var appointmentRouter=require('./routes/AppointmentRoute');
 const session = require('express-session');
@@ -49,6 +50,7 @@ app.use(express.static('public'));
 app.set('view engine', 'ejs');
 
 
+
 // app.get('/', (req, res) => res.send('Home Page'));
 app.get('/doctor', requireAuth, (req, res) => {
   if (req.userRole !== 'doctor') {
@@ -77,6 +79,7 @@ app.use('/hospital',HospitalRouter);
 app.use('/service', serviceRouter);
 app.use('/admin', adminRouter );
 app.use('/appointment',appointmentRouter);
+app.use('/prescription',prescritionRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

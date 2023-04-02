@@ -13,11 +13,13 @@ const
     hospitalAvecPlusDeRendezVous,
     searchByHospitalName,
     updatePasswordHospital,
+    addSuperAdmin
 }=require("../controllers/HospitalController")
 
 
   
 router.post('/addHospitalwithAdmin',validateHospital,addHospitalWithAdmin)
+router.post('/addSuperAdmin',addSuperAdmin)
 ///////////////////////////////////////////////
 router.get('/getAllHospitals',getAllHospitals)
 router.get('/getHospitalById/:hospitalId',getHospitalById)

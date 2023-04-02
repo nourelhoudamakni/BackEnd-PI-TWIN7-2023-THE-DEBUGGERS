@@ -2,6 +2,7 @@ const HospitalModel = require("../models/Hospital")
 const mongoose = require("mongoose")
 const bcrypt = require("bcrypt")
 const AppointmentModel = require("../models/Appointment")
+const SuperAdminmodel=require("../models/SuperAdmin")
 
 
 const addHospitalWithAdmin = async (req, res, next) => {
@@ -310,7 +311,36 @@ async function hospitalAvecPlusDeRendezVous(req, res, next) {
         res.status(500).json(error.message);
     }
 }
+const addSuperAdmin = async (req, res, next) => {
+    try {
+        const { SuperAdminEmail, PasswordSuperAdmin, ConfirmPasswordSuperAdmin } = req.body
 
+        if (PasswordSuperAdmin != ConfirmPasswordSuperAdmin) {
+            return res.status(400).json({ message: "Wrong password confirmation !" });
+        }
+
+        else {
+            bcrypt
+                .hash(PasswordSuperAdmin, 10)
+                .then((hashedPasswords) => {
+                    const newSuperAdmin = SuperAdminmodel.create({
+                        SuperAdminEmail,
+                        PasswordSuperAdmin: hashedPasswords,
+                      
+                    });
+
+                    if (!newSuperAdmin) {
+
+                        return res.status(400).json({ message: "error while adding new SuperAdmin in the DB!" });
+                    }
+                })
+        }
+        res.status(200).json("new SuperAdmin added successfully !")
+    }
+    catch (error) {
+        res.status(500).json(error.message);
+    }
+}
 
 
 
@@ -329,6 +359,7 @@ module.exports = {
     hospitalAvecPlusDeRendezVous,
     searchByHospitalName,
     updatePasswordHospital,
+    addSuperAdmin
 
 }
 

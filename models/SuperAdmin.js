@@ -8,12 +8,8 @@ const SuperAdminSchema=new mongoose.Schema({
     {
         type: String,
     },
-    ConfirmPasswordSuperAdmin:
-    {
-        type: String,
-    }
-    
+  
    
 });
-const SuperAdmin=mongoose.Model("SuperAdmin",SuperAdminSchema);
+const SuperAdmin=mongoose.model("SuperAdmin",SuperAdminSchema);
 module.exports=SuperAdmin;

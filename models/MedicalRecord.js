@@ -122,10 +122,7 @@ const  MedicalRecordSchema=new mongoose.Schema({
         type:Schema.Types.ObjectId,
         ref:"Patient"
     },
-    prescription:[{
-        type:Schema.Types.ObjectId,
-        ref:"Prescription"
-    }]
+ 
 })
 const MedicalRecord = mongoose.model('MedicalRecord', MedicalRecordSchema);
 module.exports = MedicalRecord;

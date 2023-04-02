@@ -1,17 +1,9 @@
-const mongoose=required("mongoose"); 
+const mongoose=require("mongoose"); 
 const Schema=mongoose.Schema;
 const prescriptionSchema=new mongoose.Schema({ 
     
-    DateOfMd:{ 
+    DateOfVisit:{ 
         type:Date, 
-        required:true
-    }, 
-    DoctorName:{ 
-        type:String, 
-        required:true  
-    }, 
-    DoctorLastName:{ 
-        type:String, 
         required:true
     }, 
     Treatments:{ 
@@ -28,15 +20,15 @@ const prescriptionSchema=new mongoose.Schema({
     }, 
     Signature:{ 
         type:String, 
-        required:true
+       
     },
     Doctor:{
         type:Schema.Types.ObjectId,
         ref:"Doctor"
     },
-    MedicalRecords:{
+    Patient:{
         type:Schema.Types.ObjectId,
-        ref:"MedicalRecord"
+        ref:"Patient"
     },
 })
 const Prescription = mongoose.model('Prescription', prescriptionSchema);
