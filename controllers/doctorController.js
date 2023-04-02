@@ -3,7 +3,6 @@ const medicalRecord = require('../models/MedicalRecord');
 const path = require('path');
 const user = require('../models/User');
 const bcrypt = require('bcrypt');
-const Doctor=require('../models/Doctor');
 const express = require('express');
 const nodemailer = require('nodemailer');
 const Appointment = require("../models/Appointment");
@@ -11,7 +10,7 @@ require('dotenv').config();
 const accountSid = process.env.ACCOUNT_SID_TWILIO;
 const authToken = process.env.AUTH_TOKEN_TWILIO;
 const client = require('twilio')(accountSid, authToken);
-
+const Doctor = require("../models/Doctor");
 
 
 //update Doctors profile 
@@ -217,6 +216,7 @@ exports.validateAppointment = async (req, res) => {
     }
 }
 
+
 exports.updateDoctorService=async(req,res)=>{ 
     const doctorId = req.params.userId;
     const doctor = await Doctor.findById(doctorId);
@@ -228,56 +228,57 @@ exports.updateDoctorService=async(req,res)=>{
     const updateDoctor = await Doctor.findByIdAndUpdate(doctorId, {
       $set: { Service: serviceId },
     }, { new: true });
-    
+
     res.json(updateDoctor);
-    
+
 }
 
 exports.getDoctorAppointmentsWithLeastPatients= async (req,res) => {
-    try {
-      const serviceId=req.params.serviceId; 
-      const appointments = await Appointment.find({ 'Patient': { $ne: null }, 'HospitalService': serviceId })
-        .populate('Doctor')
-        .exec();
-        if (appointments.length === 0) {
-          throw new Error('No appointments found with the given serviceId');
-        }
-      const doctorCounts = appointments.reduce((acc, appointment) => {
-        const doctorId = appointment.Doctor._id.toString();
-        if (!acc.hasOwnProperty(doctorId)) {
-          acc[doctorId] = 0;
-        }
-        acc[doctorId]++;
-        return acc;
-      }, {});
-      const doctorsSorted = Object.keys(doctorCounts).sort((a, b) => doctorCounts[a] - doctorCounts[b]);
-      let i = 0;
-      let doctor = null;
-      let doctorAppointments = null;
-      while (i < doctorsSorted.length && !doctorAppointments) {
-        doctor = await Doctor.findById(doctorsSorted[i]).populate({
-          path: 'Appointments',
-          match: { 'Patient': null, 'HospitalService': serviceId }
-        }).exec();
-        if (doctor.Appointments.length > 0) {
-          doctorAppointments = doctor.Appointments;
-        }
-        i++;
+  try {
+    const serviceId=req.params.serviceId; 
+    const appointments = await Appointment.find({ 'Patient': { $ne: null }, 'HospitalService': serviceId })
+      .populate('Doctor')
+      .exec();
+      if (appointments.length === 0) {
+        throw new Error('No appointments found with the given serviceId');
       }
-  
-      if (!doctorAppointments) {
-        throw new Error('No doctor found with available appointments');
+    const doctorCounts = appointments.reduce((acc, appointment) => {
+      const doctorId = appointment.Doctor._id.toString();
+      if (!acc.hasOwnProperty(doctorId)) {
+        acc[doctorId] = 0;
       }
-  
-      res.status(200).json(doctorAppointments);
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: 'Failed to get doctor appointments with least patients.' });
-  
+      acc[doctorId]++;
+      return acc;
+    }, {});
+    const doctorsSorted = Object.keys(doctorCounts).sort((a, b) => doctorCounts[a] - doctorCounts[b]);
+    let i = 0;
+    let doctor = null;
+    let doctorAppointments = null;
+    while (i < doctorsSorted.length && !doctorAppointments) {
+      doctor = await Doctor.findById(doctorsSorted[i]).populate({
+        path: 'Appointments',
+        match: { 'Patient': null, 'HospitalService': serviceId }
+      }).exec();
+      if (doctor && doctor.Appointments.length > 0) {
+        doctorAppointments = doctor.Appointments;
+      }
+      i++;
     }
-  }
 
-  exports.getAvailableAppointments = async (req, res) => {
+    if (!doctorAppointments) {
+      throw new Error('No doctor found with available appointments');
+    }
+
+    res.status(200).json(doctorAppointments);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to get doctor appointments with least patients.' });
+
+  }
+}
+
+
+exports.getAvailableAppointments = async (req, res) => {
     try {
       const serviceId = req.params.serviceId;
       const appointments = await Appointment.find({ 'Patient': null, 'HospitalService': serviceId }).exec();
@@ -290,3 +291,4 @@ exports.getDoctorAppointmentsWithLeastPatients= async (req,res) => {
       res.status(500).json({ message: 'Failed to get appointments ' });
     }
   }
+  
