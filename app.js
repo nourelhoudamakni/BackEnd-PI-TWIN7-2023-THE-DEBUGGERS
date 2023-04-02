@@ -7,7 +7,6 @@ var logger = require('morgan');
 const mongoose=require('mongoose');
 var authRoutes = require('./routes/authRoutes');
 const { requireAuth } = require('./middlewares/authMiddleware');
-const { requireAuthAdmin } = require('./middlewares/authMiddleware');
 require ('dotenv').config();
 const patient =require('./models/Patient');
 var medicalRecordRouter=require('./routes/medicalRecord');
@@ -64,7 +63,6 @@ app.get('/patient', requireAuth, (req, res) => {
     res.send('Patient Space');
   }
 });
-app.get('/admin',requireAuthAdmin,(req,res)=>res.send('Admin Space'));
 
 /////les paths des routes 
 app.use('/',indexRouter)
