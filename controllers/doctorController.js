@@ -216,20 +216,22 @@ exports.validateAppointment = async (req, res) => {
     }
 }
 
-exports.getAvailableAppointments = async (req, res) => {
-  try {
-    const serviceId = req.params.serviceId;
-    const appointments = await Appointment.find({ 'Patient': null, 'HospitalService': serviceId }).exec();
-    if (appointments.length === 0) {
-      throw new Error('No appointments found with the given serviceId ');
-    }
-    res.status(200).json(appointments);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Failed to get appointments ' });
-  }
-}
 
+exports.updateDoctorService=async(req,res)=>{ 
+    const doctorId = req.params.userId;
+    const doctor = await Doctor.findById(doctorId);
+    if (doctor.Service) {
+      res.status(400).json({ message: 'Doctor already has a service assigned' });
+      return;
+    }
+    const serviceId = req.params.serviceId;
+    const updateDoctor = await Doctor.findByIdAndUpdate(doctorId, {
+      $set: { Service: serviceId },
+    }, { new: true });
+
+    res.json(updateDoctor);
+
+}
 
 exports.getDoctorAppointmentsWithLeastPatients= async (req,res) => {
   try {
@@ -275,3 +277,18 @@ exports.getDoctorAppointmentsWithLeastPatients= async (req,res) => {
   }
 }
 
+
+exports.getAvailableAppointments = async (req, res) => {
+    try {
+      const serviceId = req.params.serviceId;
+      const appointments = await Appointment.find({ 'Patient': null, 'HospitalService': serviceId }).exec();
+      if (appointments.length === 0) {
+        throw new Error('No appointments found with the given serviceId ');
+      }
+      res.status(200).json(appointments);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Failed to get appointments ' });
+    }
+  }
+  
