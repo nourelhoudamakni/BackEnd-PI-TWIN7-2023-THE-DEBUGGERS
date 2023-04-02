@@ -40,7 +40,7 @@ const AddWorkTimeAppointment = async (req, res, next) => {
     // Create appointments for each half hour of WorkTime
     for (const date of WorkTime) {
         const [year, month, day] = date.split('-');
-        for (let hour = 9; hour <= 13; hour++) {
+        for (let hour = 8; hour <= 13; hour++) {
             for (let minute = 0; minute < 60; minute += 20) {
                 const appointmentDate = new Date(year, month - 1, day, hour, minute);
 
@@ -95,7 +95,7 @@ const GetAppointmentsByDoctorId = async (req, res, next) => {
         if (!id) {
             throw new Error('No doctor ID inserted');
         }
-        const appointments = await Appointment.find({ Doctor: id, Patient: { $ne: null } });
+        const appointments = await Appointment.find({ Doctor: id,Patient: { $ne: null }});
         if (appointments.length === 0) {
             throw new Error('No appointments found');
         }
