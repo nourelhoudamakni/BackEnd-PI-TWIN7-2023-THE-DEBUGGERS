@@ -13,7 +13,9 @@ const patient =require('./models/Patient');
 var medicalRecordRouter=require('./routes/medicalRecord');
 var patientRouter=require('./routes/patientRouter');
 var doctorRouter=require('./routes/doctorRouter');
+var messageRoute=require('./routes/messageRoute');
 const signUpRouter=require('./routes/signUp');
+var chatRouter=require('./routes/chatRouter')
 var HospitalRouter=require('./routes/Hospital');
 var serviceRouter = require('./routes/service');
 var adminRouter = require('./routes/adminDash');
@@ -77,6 +79,8 @@ app.use('/hospital',HospitalRouter);
 app.use('/service', serviceRouter);
 app.use('/admin', adminRouter );
 app.use('/appointment',appointmentRouter);
+app.use('/chat',chatRouter)
+app.use('/message',messageRoute)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

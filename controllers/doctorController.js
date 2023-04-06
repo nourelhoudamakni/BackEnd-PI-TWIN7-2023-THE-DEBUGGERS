@@ -6,6 +6,8 @@ const bcrypt = require('bcrypt');
 const express = require('express');
 const nodemailer = require('nodemailer');
 const Appointment = require("../models/Appointment");
+const Doctor = require("../models/Doctor");
+const Patient = require("../models/Patient");
 require('dotenv').config();
 const accountSid = process.env.ACCOUNT_SID_TWILIO;
 const authToken = process.env.AUTH_TOKEN_TWILIO;
@@ -215,3 +217,20 @@ exports.validateAppointment = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 }
+exports.getPatientList = async (req, res) => {
+    try {
+      const doctorId = req.body.doctorId;
+      const doctor = await Doctor.findById(doctorId);
+      const patientsListId = doctor.Patients;
+      var patients = [];
+      const promises = patientsListId.map(async (d) => {
+        var patientInfo = await Patient.findById(d);
+        patients.push(patientInfo);
+      });
+      await Promise.all(promises);
+      res.json(patients);
+      console.log(patients);
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  };

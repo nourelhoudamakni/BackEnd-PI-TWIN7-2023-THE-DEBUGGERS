@@ -7,6 +7,8 @@ const express = require('express');
 const Hospital = require("../models/Hospital");
 const HospitalService = require("../models/HospitalService");
 const Appointment = require("../models/Appointment");
+const Patient = require("../models/Patient");
+const Doctor = require("../models/Doctor");
 
 require('dotenv');
  var client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
@@ -277,4 +279,21 @@ exports.notificationBeforeTheAppointment=async(req,res)=>{
 }
 
 
-
+exports.getDoctorList = async (req, res) => {
+    try {
+      const patientId = req.body.patientId;
+      const patient = await Patient.findById(patientId);
+      const doctorsListId = patient.Doctors;
+      var doctors = [];
+  
+      const promises = doctorsListId.map(async (d) => {
+        var doctorInfo = await Doctor.findById(d);
+        doctors.push(doctorInfo);
+      });
+      await Promise.all(promises);
+      res.json(doctors);
+      console.log(doctors);
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  };

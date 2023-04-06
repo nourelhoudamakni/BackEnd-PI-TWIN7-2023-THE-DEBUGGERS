@@ -23,4 +23,6 @@ router.get("/searchAppointment",patientControlleur.searchForAppointmentByTitle);
 router.get("/sortAppointment",patientControlleur.sortForAppointment);
 router.delete("/deleteAppointment/:idPatient",patientControlleur.deleteAppointmentFromPatient);
 router.get("/notification/:idPatient",patientControlleur.notificationBeforeTheAppointment);
+router.post("/getListDoctor",patientControlleur.getDoctorList);
+
 module.exports = router;

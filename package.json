@@ -23,6 +23,7 @@
     "email-validator": "^2.0.4",
     "enum": "^3.0.4",
     "express": "~4.16.1",
+    "express-async-handler": "^1.2.0",
     "express-session": "^1.17.3",
     "http-errors": "~1.6.3",
     "jsonwebtoken": "^9.0.0",
