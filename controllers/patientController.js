@@ -7,9 +7,6 @@ const express = require('express');
 const Hospital = require("../models/Hospital");
 const HospitalService = require("../models/HospitalService");
 const Appointment = require("../models/Appointment");
-const Patient = require("../models/Patient");
-const Doctor = require("../models/Doctor");
-
 require('dotenv');
  var client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 //update patient profile 
@@ -150,16 +147,19 @@ exports.getAppointmentsByHospitalServicesId= async(req,res)=>{
 //takeAppointment
 exports.takeAppointment= async(req,res)=>{
     const { appointmentId } = req.params;
-    const {patientId}=req.body;  //patient id recepurer depuis local storge
+    const { patientId } = req.body;
 
     try{
         const appointment= await Appointment.findById(appointmentId);
+        const patient= await user.findById(patientId);
         if(!appointment){
             return res.status(404).json({message:"Appointment not found"})
-        }
+        }  
         appointment.Patient=patientId;
+        patient.Appointments.push(appointment._id);
         await appointment.save();
-        res.json(appointment);
+        await patient.save();
+        res.json({ message: "Appointment taken successfully", appointment });
     }catch(err){
         res.status(500).json({message:err.message});
     }
@@ -279,21 +279,4 @@ exports.notificationBeforeTheAppointment=async(req,res)=>{
 }
 
 
-exports.getDoctorList = async (req, res) => {
-    try {
-      const patientId = req.body.patientId;
-      const patient = await Patient.findById(patientId);
-      const doctorsListId = patient.Doctors;
-      var doctors = [];
-  
-      const promises = doctorsListId.map(async (d) => {
-        var doctorInfo = await Doctor.findById(d);
-        doctors.push(doctorInfo);
-      });
-      await Promise.all(promises);
-      res.json(doctors);
-      console.log(doctors);
-    } catch (error) {
-      res.status(500).json(error.message);
-    }
-  };
+
