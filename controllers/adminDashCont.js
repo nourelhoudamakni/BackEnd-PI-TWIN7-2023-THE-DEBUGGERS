@@ -5,7 +5,7 @@ const UserModel = require('../models/User');
 // This function gets all confirmed and validated doctors
 const getDoctorsConfirmedValidated = async (req, res, next) => {
   try {
-    const serviceId=req.params
+    const {serviceId}=req.params
     // search for all documents where confirmed is true, IsValidated is true, and role is doctor
     const confirmedValidatedDoctors  = await DoctorModel.find({  confirmed: true, IsValidated: true , "role": "doctor" ,Service:serviceId});
     res.status(200).json(confirmedValidatedDoctors);

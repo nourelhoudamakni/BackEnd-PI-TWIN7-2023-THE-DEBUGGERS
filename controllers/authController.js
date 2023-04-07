@@ -63,7 +63,7 @@ const handleErrorsAdmin = (err) => {
   }
 
   // incorrect password
-  else if (err.message === "incorrect admin password" && "incorrect superAdmin email") {
+  else if (err.message === "incorrect admin password" && "incorrect superAdmin password") {
     errors.ErrorPassword = "that password is incorrect";
   }
   // filter out empty strings
