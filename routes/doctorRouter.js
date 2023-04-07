@@ -12,6 +12,7 @@ router.post("/verifSms/:userId", doctorController.verifNumber);
 router.put("/updateDoctor/:userId", doctorController.updateDoctor);
 router.put("/updatePasswordDoctor/:userId", doctorController.updateUserPassword);
 router.put("/updateDoctorService/:userId/:serviceId",doctorController.updateDoctorService);
+router.put("/updateDoctorService/:userId/:serviceId",doctorController.updateDoctorService);
 
 router.get("/appointments", getAppointments);
 router.get("/appointments/:appointmentId", getAppointmentById);
