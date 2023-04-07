@@ -13,7 +13,7 @@ router.put("/updateDoctor/:userId", doctorController.updateDoctor);
 router.put("/updatePasswordDoctor/:userId", doctorController.updateUserPassword);
 router.put("/updateDoctorService/:userId/:serviceId",doctorController.updateDoctorService);
 router.put("/updateDoctorService/:userId/:serviceId",doctorController.updateDoctorService);
-
+router.post("/getPatientList", doctorController.getPatientList);
 router.get("/appointments", getAppointments);
 router.get("/appointments/:appointmentId", getAppointmentById);
 router.put("/appointments/:appointmentId", updateAppointment);
