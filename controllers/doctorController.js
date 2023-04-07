@@ -11,6 +11,7 @@ const accountSid = process.env.ACCOUNT_SID_TWILIO;
 const authToken = process.env.AUTH_TOKEN_TWILIO;
 const client = require('twilio')(accountSid, authToken);
 const Doctor = require("../models/Doctor");
+const Patient = require("../models/Patient");
 
 
 //update Doctors profile 
@@ -290,5 +291,25 @@ exports.getAvailableAppointments = async (req, res) => {
       console.error(err);
       res.status(500).json({ message: 'Failed to get appointments ' });
     }
-  }
+  }; 
+
+
+
+  exports.getPatientList = async (req, res) => {
+    try {
+      const doctorId = req.body.doctorId;
+      const doctor = await Doctor.findById(doctorId);
+      const patientsListId = doctor.Patients;
+      var patients = [];
+      const promises = patientsListId.map(async (d) => {
+        var patientInfo = await Patient.findById(d);
+        patients.push(patientInfo);
+      });
+      await Promise.all(promises);
+      res.json(patients);
+      console.log(patients);
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  };
   
