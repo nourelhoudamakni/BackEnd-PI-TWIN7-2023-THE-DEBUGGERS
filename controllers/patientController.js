@@ -192,7 +192,13 @@ exports.getAppointmentByIdPatient=async(req,res)=>{
     try{ 
         const idPatient=req.params.idPatient;  
         const patient=await user.findById(idPatient);
-        res.json(patient.Appointments)   
+
+        const appointments = patient.Appointments;
+        const populatedAppointments = await Promise.all(appointments.map(async appointmentId => {
+          const appointment = await Appointment.findById(appointmentId);
+          return appointment;
+        }));
+        res.json(populatedAppointments) ;
     }catch(error){ 
          res.status(500).json(error.message)
     }
@@ -248,7 +254,7 @@ exports.deleteAppointmentFromPatient=async(req,res)=>{
         patient.save();
         res.json(listAppointment)
     }catch(error){ 
-        res.json(500).json(error.messa*ge)
+        res.json(500).json(error.message)
     }
 }
 

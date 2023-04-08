@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {addService , updateService , deleteService , getallServices , countServicesInHospital , getHospitalServices,getServiceById} = require("../controllers/serviceController");
+const {addService , updateService , deleteService , getallServices , countServicesInHospital , getHospitalServices, getServiceById} = require("../controllers/serviceController");
 
 
 router.post("/addservice/:hospitalId", addService);

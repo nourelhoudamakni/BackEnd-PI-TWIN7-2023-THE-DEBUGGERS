@@ -1,6 +1,5 @@
 const HospitalServiceModel = require("../models/HospitalService");
 const Hospital = require('../models/Hospital');
-const ServiceModel=require("../models/HospitalService")
 
 // Add a new service
 const addService = async (req, res, next) => {
@@ -172,19 +171,20 @@ const getHospitalServices = async (req, res, next) => {
 
 const getServiceById = async (req, res, next) => {
   try {
-      const { serviceId } = req.params
-      const service = await ServiceModel.findById(serviceId)
-      if (!service) {
-           return res.status(404).json({ message: "service not found" });
-          // throw new Error("Hospital not found");
-      }
-      res.status(200).json(service);
-  }
-  catch (error) {
-      res.status(500).json(error.message);
-  }
-}
+    const { serviceId } = req.params;
 
+    const service = await HospitalServiceModel.findById(serviceId);
+
+    if (!service) {
+      return res.status(404).json({ message: "Service not found" });
+    }
+
+    res.json(service);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 
 module.exports = {
     addService,
@@ -193,5 +193,5 @@ module.exports = {
     getallServices,
     countServicesInHospital,
     getHospitalServices,
-    getServiceById
+    getServiceById,
   };
