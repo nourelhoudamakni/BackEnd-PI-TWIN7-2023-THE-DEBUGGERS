@@ -187,18 +187,18 @@ const sendRestPasswordMail = async (email, token) => {
       to: email,
       subject: 'Reset Your Password',
       html: `
-          <div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.5; text-align: center;">
-            <h2 style="margin-top: 0;">Password Reset</h2>
-            <p style="margin-bottom: 20px;">To reset your password, please click the button below:</p>   
-            <div style="text-align: center; width: 100%;">
-              <a href="http://localhost:3000/reset-password/${token}" style="display: inline-block; background-color: #4CAF50; color: white; padding: 12px 24px; border-radius: 4px; text-decoration: none; font-size: 16px; font-weight: bold; cursor: pointer;">
-                Change Password
-              </a>
-            </div>
-          <div>
-
+        <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 20px; line-height: 1.5; text-align: center; background-image: url('https://wallpapercave.com/wp/wp8002975.jpg'); background-repeat: no-repeat; background-size: cover; background-position: center; padding: 50px;">
+          <h2 style="margin-top: 50px; margin-bottom: 30px; color: navy; font-size: 28px;">Password Reset</h2>
+          <p style="margin-bottom: 30px; color: navy; font-size: 20px;">To reset your password, please click the button below:</p>   
+          <div style="text-align: center; width: 100%;">
+            <a href="http://localhost:3000/reset-password/${token}" style="display: inline-block; background-color: #4CAF50; color: white; padding: 12px 24px; border-radius: 4px; text-decoration: none; font-size: 20px; font-weight: bold; cursor: pointer; margin-bottom: 50px;">
+              Change Password
+            </a>
+          </div>
+        </div>     
       `
-    };
+    };  
+           
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
         console.log(error);
