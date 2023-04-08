@@ -241,22 +241,22 @@ exports.sortForAppointment=async(req,res)=>{
 }
 
 //patient delete his id from the appointment 
-exports.deleteAppointmentFromPatient=async(req,res)=>{ 
-    try{ 
-        const idPatient=req.params.idPatient; 
-        const idAppointment=req.body.idAppointment; 
-        const appointment=await Appointment.findById(idAppointment); 
-        appointment.Patient=null; 
-        const patient=await user.findById(idPatient); 
-        const listAppointment=patient.Appointments.filter(p=>p._id!=idAppointment)
-        patient.Appointments=listAppointment;
-        appointment.save(); 
-        patient.save();
-        res.json(listAppointment)
-    }catch(error){ 
-        res.json(500).json(error.message)
+exports.deleteAppointmentFromPatient = async (req, res, next) => {
+    try {
+      const idPatient = req.params.idPatient;
+      const idAppointment = req.params.idAppointment;
+      const appointment = await Appointment.findById(idAppointment);
+      appointment.Patient = null;
+      const patient = await user.findById(idPatient);
+      const listAppointment = patient.Appointments.filter(p => p._id != idAppointment);
+      patient.Appointments = listAppointment;
+      appointment.save();
+      patient.save();
+      res.json(listAppointment);
+    } catch (error) {
+      next(error);
     }
-}
+  };
 
 
 //notification before 1h of appointment 
