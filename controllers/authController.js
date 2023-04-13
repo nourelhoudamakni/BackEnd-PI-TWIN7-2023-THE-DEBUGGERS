@@ -185,9 +185,20 @@ const sendRestPasswordMail = async (email, token) => {
     const mailOptions = {
       from: process.env.USER_EMAIL,
       to: email,
-      subject: 'For reset password',
-      html: '<p>Hi please copy the link and <a href="http://localhost:3000/reset-password/' + token + '"> reset your password</a>'
-    }
+      subject: 'Reset Your Password',
+      html: `
+        <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 20px; line-height: 1.5; text-align: center; background-image: url('https://wallpapercave.com/wp/wp8002975.jpg'); background-repeat: no-repeat; background-size: cover; background-position: center; padding: 50px;">
+          <h2 style="margin-top: 50px; margin-bottom: 30px; color: navy; font-size: 28px;">Password Reset</h2>
+          <p style="margin-bottom: 30px; color: navy; font-size: 20px;">To reset your password, please click the button below:</p>   
+          <div style="text-align: center; width: 100%;">
+            <a href="http://localhost:3000/reset-password/${token}" style="display: inline-block; background-color: #4CAF50; color: white; padding: 12px 24px; border-radius: 4px; text-decoration: none; font-size: 20px; font-weight: bold; cursor: pointer; margin-bottom: 50px;">
+              Change Password
+            </a>
+          </div>
+        </div>     
+      `
+    };  
+           
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
         console.log(error);
@@ -234,6 +245,12 @@ const reset_password = async (req, res) => {
     if (tokenData) {
       const password = req.body.password;
       const newPassword = await securePassword(password);
+
+      // Check if the new password is the same as the old password
+      if (newPassword === tokenData.password) {
+        return res.status(400).json({ success: false, msg: "Your new password cannot be the same as your old password." });
+      }
+
       const userData = await User.findByIdAndUpdate(
         { _id: tokenData._id },
         { $set: { password: newPassword, token: '' } },
@@ -241,7 +258,7 @@ const reset_password = async (req, res) => {
       );
       res.status(200).json({ success: true, msg: "User password has been reset" });
     } else {
-      res.status(200).json({ success: true, msg: "This link has been expired." });
+      res.status(200).json({ success: true, msg: "This link has expired." });
     }
   } catch (error) {
     res.status(400).json({ success: false, msg: error.message });

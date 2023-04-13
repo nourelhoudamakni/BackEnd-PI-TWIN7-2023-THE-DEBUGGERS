@@ -21,7 +21,7 @@ router.post("/addAppointment/:idPatient",patientControlleur.addAppointments);
 router.get("/getAppointment/:idPatient",patientControlleur.getAppointmentByIdPatient);
 router.get("/searchAppointment",patientControlleur.searchForAppointmentByTitle);
 router.get("/sortAppointment",patientControlleur.sortForAppointment);
-router.delete("/deleteAppointment/:idPatient",patientControlleur.deleteAppointmentFromPatient);
+router.delete("/deleteAppointment/:idPatient/:idAppointment",patientControlleur.deleteAppointmentFromPatient);
 router.get("/notification/:idPatient",patientControlleur.notificationBeforeTheAppointment);
 router.post("/getListDoctor",patientControlleur.getDoctorList);
 router.put("/addImageProfile/:userId",patientControlleur.ProfileImage,patientControlleur.addImageToUserProfile);
