@@ -244,7 +244,7 @@ exports.deleteAppointmentFromPatient=async(req,res)=>{
         patient.save();
         res.json(listAppointment)
     }catch(error){ 
-        res.json(500).json(error.messa*ge)
+        res.json(500).json(error.message)
     }
 }
 
