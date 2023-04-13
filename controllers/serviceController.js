@@ -168,6 +168,24 @@ const getHospitalServices = async (req, res, next) => {
   }
 };
 
+
+const getServiceById = async (req, res, next) => {
+  try {
+    const { serviceId } = req.params;
+
+    const service = await HospitalServiceModel.findById(serviceId);
+
+    if (!service) {
+      return res.status(404).json({ message: "Service not found" });
+    }
+
+    res.json(service);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 module.exports = {
     addService,
     updateService,
@@ -175,4 +193,5 @@ module.exports = {
     getallServices,
     countServicesInHospital,
     getHospitalServices,
+    getServiceById,
   };

@@ -8,6 +8,7 @@ const Hospital = require("../models/Hospital");
 const HospitalService = require("../models/HospitalService");
 const Appointment = require("../models/Appointment");
 const Patient = require("../models/Patient");
+const Doctor = require("../models/Doctor");
 require('dotenv');
  var client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 //update patient profile 
@@ -152,12 +153,15 @@ exports.takeAppointment= async(req,res)=>{
 
     try{
         const appointment= await Appointment.findById(appointmentId);
+        const patient= await user.findById(patientId);
         if(!appointment){
             return res.status(404).json({message:"Appointment not found"})
         }  
         appointment.Patient=patientId;
+        patient.Appointments.push(appointment._id);
         await appointment.save();
-        res.json(appointment);
+        await patient.save();
+        res.json({ message: "Appointment taken successfully", appointment });
     }catch(err){
         res.status(500).json({message:err.message});
     }
@@ -188,7 +192,13 @@ exports.getAppointmentByIdPatient=async(req,res)=>{
     try{ 
         const idPatient=req.params.idPatient;  
         const patient=await user.findById(idPatient);
-        res.json(patient.Appointments)   
+
+        const appointments = patient.Appointments;
+        const populatedAppointments = await Promise.all(appointments.map(async appointmentId => {
+          const appointment = await Appointment.findById(appointmentId);
+          return appointment;
+        }));
+        res.json(populatedAppointments) ;
     }catch(error){ 
          res.status(500).json(error.message)
     }
@@ -231,22 +241,22 @@ exports.sortForAppointment=async(req,res)=>{
 }
 
 //patient delete his id from the appointment 
-exports.deleteAppointmentFromPatient=async(req,res)=>{ 
-    try{ 
-        const idPatient=req.params.idPatient; 
-        const idAppointment=req.body.idAppointment; 
-        const appointment=await Appointment.findById(idAppointment); 
-        appointment.Patient=null; 
-        const patient=await user.findById(idPatient); 
-        const listAppointment=patient.Appointments.filter(p=>p._id!=idAppointment)
-        patient.Appointments=listAppointment;
-        appointment.save(); 
-        patient.save();
-        res.json(listAppointment)
-    }catch(error){ 
-        res.json(500).json(error.message)
+exports.deleteAppointmentFromPatient = async (req, res, next) => {
+    try {
+      const idPatient = req.params.idPatient;
+      const idAppointment = req.params.idAppointment;
+      const appointment = await Appointment.findById(idAppointment);
+      appointment.Patient = null;
+      const patient = await user.findById(idPatient);
+      const listAppointment = patient.Appointments.filter(p => p._id != idAppointment);
+      patient.Appointments = listAppointment;
+      appointment.save();
+      patient.save();
+      res.json(listAppointment);
+    } catch (error) {
+      next(error);
     }
-}
+  };
 
 
 //notification before 1h of appointment 
@@ -277,4 +287,21 @@ exports.notificationBeforeTheAppointment=async(req,res)=>{
 }
 
 
-
+exports.getDoctorList = async (req, res) => {
+    try {
+      const patientId = req.body.patientId;
+      const patient = await Patient.findById(patientId);
+      const doctorsListId = patient.Doctors;
+      var doctors = [];
+  
+      const promises = doctorsListId.map(async (d) => {
+        var doctorInfo = await Doctor.findById(d);
+        doctors.push(doctorInfo);
+      });
+      await Promise.all(promises);
+      res.json(doctors);
+      console.log(doctors);
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  };
