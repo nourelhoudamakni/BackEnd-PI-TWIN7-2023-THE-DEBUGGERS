@@ -113,8 +113,8 @@ const login_post = async (req, res) => {
   }
 }
 
-const createTokenAdmin = (id) => {
-  return jwt.sign({ id }, 'Admin information secret', {    //secret key that is used to sign the jwt (should not share)
+const createTokenAdmin = (id, role) => {
+  return jwt.sign({ id, role }, 'Admin information secret', {    //secret key that is used to sign the jwt (should not share)
     expiresIn: maxAge
   })
 }
@@ -126,13 +126,13 @@ const loginAdmin_post = async (req, res) => {
     // First, try to login as a superadmin
     try {
       user = await SuperAdmin.login(email, password);
-      const token = createTokenAdmin(user._id);
+      const token = createTokenAdmin(user._id,"SuperAdmin");
       res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
       res.status(200).json({ user: user._id, token });
     } catch (err) {
       // If superadmin login fails, try to login as an admin
       const admin = await Hospital.login(email, password);
-      const token = createTokenAdmin(admin._id);
+      const token = createTokenAdmin(admin._id,"Admin");
       res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
       res.status(200).json({ user: admin._id, token });
     }

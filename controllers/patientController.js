@@ -9,8 +9,53 @@ const HospitalService = require("../models/HospitalService");
 const Appointment = require("../models/Appointment");
 const Patient = require("../models/Patient");
 const Doctor = require("../models/Doctor");
+const multer = require('multer');
 require('dotenv');
  var client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+
+// Upload ImagingReports
+const storageProfileImage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/userProfile')
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname)
+    }
+
+});
+exports.ProfileImage = multer({ storage: storageProfileImage }).array('file', 1);
+
+
+exports.addImageToUserProfile = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const User = await user.findById(userId)
+        if (!User) {
+            return res.status(404).json({ message: "user not found !" })
+        }
+        if(User.image!==""){
+            User.image=""
+        }
+        
+        if (req.files) {
+            req.files.forEach((file) => {
+                User.image=file.originalname;
+            });   
+            User.save();
+            res.status(200).json(User);
+        } else {
+            res.status(400).json({ message: "No files uploaded" });
+        }
+    } 
+    catch (error) {
+        res.status(500).json(error.message);
+        console.log(error)
+    }
+
+}
+
+
+
 //update patient profile 
 exports.updatePatient=async(req,res)=>{ 
     try{ 
@@ -23,6 +68,9 @@ exports.updatePatient=async(req,res)=>{
         res.status(500).json(error.message); 
     }
 }
+
+
+
 
 // //Send : mobile verifications : 
 exports.sendSms=async(req,res)=>{ 

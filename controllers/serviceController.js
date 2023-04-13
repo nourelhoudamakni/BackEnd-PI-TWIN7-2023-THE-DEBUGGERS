@@ -1,6 +1,30 @@
 const HospitalServiceModel = require("../models/HospitalService");
 const Hospital = require('../models/Hospital');
 
+const handleErrorsADD = (err) => {
+  console.log(err.message, err.code);
+  let errors = { email: '', name: '' };
+
+ 
+  if (err.message === "Sevice name already exist! ") {
+    errors.name =" Sevice name already exist!" ;
+  }
+
+  
+  else if (err.message === "Email already exist!") {
+    errors.email = "Email already exist!";
+  }
+
+  // filter out empty strings
+  return Object.fromEntries(
+    Object.entries(errors).filter(([key, value]) => value !== '')
+  );
+};
+
+
+
+
+
 // Add a new service
 const addService = async (req, res, next) => {
   try {
@@ -14,17 +38,25 @@ const addService = async (req, res, next) => {
       return res.status(404).json({ message: "Hospital not found" });
     }
 
-     // check if service name or email already exists
-     const existingService = await HospitalServiceModel.findOne({
-      $or: [{ ServiceName }, { EmailService }],
-      Hospital: hospitalId,
-    });
-    if (existingService) {
-      return res
-        .status(400)
-        .json({ message: "Service name or email already exists" });
-    }
+    //  // check if service name or email already exists
+    //  const existingService = await HospitalServiceModel.findOne({
+    //   $or: [{ ServiceName }, { EmailService }],
+    //   Hospital: hospitalId,
+    // });
+    // if (existingService) {
+    //   return res
+    //     .status(400)
+    //     .json({ message: "Service name or email already exists" });
+    // }
 
+  const existingServiceByName=await HospitalServiceModel.findOne({ServiceName:ServiceName,Hospital:hospitalId})
+  if(existingServiceByName){
+    throw Error("Sevice name already exist! ");
+  }
+  const existingServiceByEmail=await HospitalServiceModel.findOne({EmailService:EmailService,Hospital:hospitalId})
+  if(existingServiceByEmail){
+    throw Error("Email already exist! ");
+  }
     // Create a new service object and save it to the database
 
     const newService =  new HospitalServiceModel({
@@ -42,10 +74,15 @@ const addService = async (req, res, next) => {
       // Return a success message if the service was added successfully
     res.status(201).json("service added successfully");
   } 
-  catch (err) {
-   // Return an error message if there was a server error
- res.status(500).json({message: "Server error"});
-  }
+//   catch (err) {
+//    // Return an error message if there was a server error
+//  res.status(500).json({message: "Server error"});
+//   }
+catch (err) {
+  const errors = handleErrorsADD(err);
+  res.status(400).json({ errors });
+  console.log(errors)
+}
 };
 
 // Update an existing service
