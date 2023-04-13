@@ -22,6 +22,7 @@ var indexRouter=require('./routes/index');
 var appointmentRouter=require('./routes/AppointmentRoute');
 const session = require('express-session');
 const cors = require('cors');
+const Chat = require('./models/Chat');
 
 
 var app = express();
@@ -103,9 +104,37 @@ server.listen(5000,()=>{
   console.log("app is running on port 5000");
 })
 
+//socket io 
+const io=require("socket.io")(server,{ 
+  pingTimeout:60000,
+  cors:{ 
+    origin:"http://localhost:3000",
+  }
+})
 
 
+io.on("connection", (socket)=>{ 
+console.log("connected to socket.io");
+socket.on("setup",(userData)=>{ 
+  socket.join(userData._id);
+  console.log(userData._id)
+  socket.emit("connected");
+})
+socket.on('join chat',(room)=>{ 
+  socket.join(room); 
+  console.log("user joined room "+ room );
+})
+socket.on("new message",(newMessageReceived)=>{ 
 
+  var  Chat=newMessageReceived.chat ; 
+  Chat.users.forEach(user=>{
+    if (user._id!==newMessageReceived.sender._id) { 
+      console.log("after ")
+      socket.in(user._id).emit("message received",newMessageReceived)
+    }
+  })
+})
+})
 
 
 
