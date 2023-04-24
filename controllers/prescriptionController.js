@@ -59,6 +59,7 @@ const addPrescriptionwithDoctorAndPatient = async (req, res, next) => {
     catch (error) {
 
         res.status(500).json(error.message);
+      
     }
 
 }
@@ -201,6 +202,55 @@ const getAllPrescriptionsByIdPatient = async (req, res) => {
 
 }
 
+
+const getAllPrescriptionsByIdPatientAndDoctor= async (req, res) => {
+    try {
+        const { idPatient } = req.params
+        const { idDoctor } = req.params
+        const Patient = await PatientModel.findById(idPatient)
+        if (!Patient) {
+            return res.status(404).json({ message: "patient not found !" })
+        }
+        const doctor = await DoctorModel.findById(idDoctor)
+        if (!doctor) {
+            return res.status(404).json({ message: "doctor not found !" })
+        }
+
+
+
+        const prescriptions = await PrescriptionModel.find({ Patient :idPatient,Doctor: idDoctor});
+        if (!prescriptions) {
+            return res.status(404).json({ message: "prescriptions not found" });
+        }
+        if (prescriptions.length === 0) {
+            return res.status(404).json({ message: "list of prescriptions is empty !" });
+        }
+        res.status(200).json(prescriptions);
+    }
+    catch (error) {
+        res.status(500).json(error.message);
+    }
+
+
+}
+const getPrescriptionByid = async (req, res, next) => {
+    try {
+        const {id} = req.params
+        const prescription = await PrescriptionModel.findById(id)
+        if (!prescription) {
+             return res.status(404).json({ message: "prescription not found" });
+          
+        }
+        res.status(200).json(prescription);
+    }
+    catch (error) {
+        res.status(500).json(error.message);
+    }
+}
+
+
+
+
 module.exports = {
     addPrescriptionwithDoctorAndPatient,
     addFileToPrescription,
@@ -210,6 +260,8 @@ module.exports = {
     deletePrescription,
     getAllPrescriptionsByIdDoctor,
     getAllPrescriptionsByIdPatient,
+    getAllPrescriptionsByIdPatientAndDoctor,
+    getPrescriptionByid
 
 
 }

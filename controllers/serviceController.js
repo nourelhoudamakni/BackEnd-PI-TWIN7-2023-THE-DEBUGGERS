@@ -6,14 +6,18 @@ const handleErrorsADD = (err) => {
   let errors = { email: '', name: '' };
 
  
-  if (err.message === "Sevice name already exist! ") {
-    errors.name =" Sevice name already exist!" ;
+  if (err.message === "Email already exist!") {
+    errors.email = "Email already exist!";
   }
 
   
-  else if (err.message === "Email already exist!") {
-    errors.email = "Email already exist!";
+  if (err.message === "Service name already exist! ") {
+    errors.name =" Sevice name already exist!" ;
   }
+
+
+  
+
 
   // filter out empty strings
   return Object.fromEntries(
@@ -51,11 +55,11 @@ const addService = async (req, res, next) => {
 
   const existingServiceByName=await HospitalServiceModel.findOne({ServiceName:ServiceName,Hospital:hospitalId})
   if(existingServiceByName){
-    throw Error("Sevice name already exist! ");
+    throw Error("Service name already exist! ");
   }
   const existingServiceByEmail=await HospitalServiceModel.findOne({EmailService:EmailService,Hospital:hospitalId})
   if(existingServiceByEmail){
-    throw Error("Email already exist! ");
+    throw Error("Email already exist!");
   }
     // Create a new service object and save it to the database
 
@@ -69,7 +73,10 @@ const addService = async (req, res, next) => {
     // if (validationError) {
     //   throw new Error(validationError.message);
     // }
+      
       await newService.save();
+      hospital.HospitalServices.push(newService._id)
+      await hospital.save()
     
       // Return a success message if the service was added successfully
     res.status(201).json("service added successfully");

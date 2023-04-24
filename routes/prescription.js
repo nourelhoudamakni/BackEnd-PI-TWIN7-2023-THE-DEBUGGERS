@@ -9,6 +9,8 @@ const{
     getAllPrescriptionsByIdDoctor,
     getAllPrescriptionsByIdPatient,
     DoctorSignature,
+    getAllPrescriptionsByIdPatientAndDoctor,
+    getPrescriptionByid
     
 }=require('../controllers/prescriptionController')
 
@@ -23,6 +25,9 @@ router.delete('/deletePrescription/:idPrescription',deletePrescription)
 /////////////////////////////////////
 router.get('/getAllPrescriptionsByIdDoctor/:idDoctor',getAllPrescriptionsByIdDoctor)
 router.get('/getAllPrescriptionsByIdPatient/:idPatient',getAllPrescriptionsByIdPatient)
+router.get('/getAllPrescriptionsByIdPatientAndDoctor/:idDoctor/:idPatient',getAllPrescriptionsByIdPatientAndDoctor)
+router.get('/getPrescriptionByid/:id',getPrescriptionByid)
+
 
 
 module.exports = router;

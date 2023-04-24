@@ -1,6 +1,7 @@
 const DoctorModel = require('../models/Doctor');
 const PatientModel = require('../models/Patient');
 const UserModel = require('../models/User');
+const HospitalServiceModel = require("../models/HospitalService");
 
 // This function gets all confirmed and validated doctors
 const getDoctorsConfirmedValidated = async (req, res, next) => {
@@ -15,17 +16,48 @@ const getDoctorsConfirmedValidated = async (req, res, next) => {
   }
 };
 
-// This function gets all confirmed but non-validated doctors
+
+
+
 const getDoctorsConfirmedNonValidated = async (req, res, next) => {
-    try {
-      // search for all documents where confirmed is true, IsValidated is false, and role is doctor
-      const confirmedNonValidatedDoctors  = await DoctorModel.find({  confirmed: true, IsValidated: false ,  "role": "doctor" });
-      res.status(200).json(confirmedNonValidatedDoctors);
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: "Server error" });
-    }
-  };
+  try {
+   
+    // search for all documents where confirmed is true, IsValidated is true, and role is doctor
+    const nonValidatedDoctors  = await DoctorModel.find({  confirmed: true, IsValidated: false , "role": "doctor" });
+    res.status(200).json(nonValidatedDoctors);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// This function gets all confirmed but non-validated doctors
+// const getDoctorsConfirmedNonValidated = async (req, res, next) => {
+//     try {
+//       const { hospitalId } = req.params;
+
+//       const services = await HospitalServiceModel.find({ Hospital: hospitalId });
+//       const confirmedNonValidatedDoctors = [];
+  
+//       for (const service of services) {
+//         const doctors = await DoctorModel.find({
+//           confirmed: true,
+//           IsValidated: false,
+//           role: "doctor",
+//           Service: service._id.toString()
+//         });
+  
+//         confirmedNonValidatedDoctors.push(doctors);
+//       }
+  
+//       res.status(200).json(confirmedNonValidatedDoctors);
+      
+//     } catch (err) {
+//       console.error(err);
+
+//       res.status(500).json({ message: "Server error" });
+//     }
+//   };
 
 
 // This function validates a doctor by updating the isValidated field to true in the database
