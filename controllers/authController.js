@@ -8,6 +8,8 @@ const bcryptjs = require('bcryptjs');
 const speakeasy = require('speakeasy');
 const SuperAdmin = require("../models/SuperAdmin")
 require('dotenv').config();
+const bcrypt = require('bcrypt');
+
 
 //handle errors
 const handleErrors = (err) => {
@@ -239,24 +241,28 @@ const securePassword = async (password) => {
 }
 
 const reset_password = async (req, res) => {
+  const saltRounds = 10;
   try {
     const token = req.params.token;
     const tokenData = await User.findOne({ token: token });
     if (tokenData) {
       const password = req.body.password;
-      const newPassword = await securePassword(password);
+      const hashedPassword = tokenData.password; // Get the hashed password from the tokenData object
 
-      // Check if the new password is the same as the old password
-      if (newPassword === tokenData.password) {
-        return res.status(400).json({ success: false, msg: "Your new password cannot be the same as your old password." });
+      const passwordMatches = await bcrypt.compare(password, hashedPassword); // Compare the entered password with the hashed password
+
+      if (passwordMatches) {
+        res.status(400).json({ success: false, msg: "New password must be different from old password." });
+      } else {
+        const newPassword = await bcrypt.hash(password, saltRounds); // Hash the new password
+
+        const userData = await User.findByIdAndUpdate(
+          { _id: tokenData._id },
+          { $set: { password: newPassword, token: '' } },
+          { new: true }
+        );
+        res.status(200).json({ success: true, msg: "User password has been reset" });
       }
-
-      const userData = await User.findByIdAndUpdate(
-        { _id: tokenData._id },
-        { $set: { password: newPassword, token: '' } },
-        { new: true }
-      );
-      res.status(200).json({ success: true, msg: "User password has been reset" });
     } else {
       res.status(200).json({ success: true, msg: "This link has expired." });
     }
@@ -264,6 +270,8 @@ const reset_password = async (req, res) => {
     res.status(400).json({ success: false, msg: error.message });
   }
 }
+
+
 
 
 module.exports = {
