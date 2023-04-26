@@ -8,6 +8,8 @@ const bcryptjs = require('bcryptjs');
 const speakeasy = require('speakeasy');
 const SuperAdmin = require("../models/SuperAdmin")
 require('dotenv').config();
+const bcrypt = require('bcrypt');
+
 
 //handle errors
 const handleErrors = (err) => {
@@ -73,7 +75,7 @@ const handleErrorsAdmin = (err) => {
 };
 
 // create json web token
-const maxAge = 30 * 60  //30 minutes with seconds
+const maxAge = 15 * 60  //15 minutes with seconds
 
 //function createToken the encoded data here is the id
 const createToken = (id, role) => {
@@ -185,9 +187,20 @@ const sendRestPasswordMail = async (email, token) => {
     const mailOptions = {
       from: process.env.USER_EMAIL,
       to: email,
-      subject: 'For reset password',
-      html: '<p>Hi please copy the link and <a href="http://localhost:3000/reset-password/' + token + '"> reset your password</a>'
-    }
+      subject: 'Reset Your Password',
+      html: `
+        <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 20px; line-height: 1.5; text-align: center; background-image: url('https://wallpapercave.com/wp/wp8002975.jpg'); background-repeat: no-repeat; background-size: cover; background-position: center; padding: 50px;">
+          <h2 style="margin-top: 50px; margin-bottom: 30px; color: navy; font-size: 28px;">Password Reset</h2>
+          <p style="margin-bottom: 30px; color: navy; font-size: 20px;">To reset your password, please click the button below:</p>   
+          <div style="text-align: center; width: 100%;">
+            <a href="http://localhost:3000/reset-password/${token}" style="display: inline-block; background-color: #4CAF50; color: white; padding: 12px 24px; border-radius: 4px; text-decoration: none; font-size: 20px; font-weight: bold; cursor: pointer; margin-bottom: 50px;">
+              Change Password
+            </a>
+          </div>
+        </div>     
+      `
+    };  
+           
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
         console.log(error);
@@ -228,25 +241,37 @@ const securePassword = async (password) => {
 }
 
 const reset_password = async (req, res) => {
+  const saltRounds = 10;
   try {
     const token = req.params.token;
     const tokenData = await User.findOne({ token: token });
     if (tokenData) {
       const password = req.body.password;
-      const newPassword = await securePassword(password);
-      const userData = await User.findByIdAndUpdate(
-        { _id: tokenData._id },
-        { $set: { password: newPassword, token: '' } },
-        { new: true }
-      );
-      res.status(200).json({ success: true, msg: "User password has been reset" });
+      const hashedPassword = tokenData.password; // Get the hashed password from the tokenData object
+
+      const passwordMatches = await bcrypt.compare(password, hashedPassword); // Compare the entered password with the hashed password
+
+      if (passwordMatches) {
+        res.status(400).json({ success: false, msg: "New password must be different from old password." });
+      } else {
+        const newPassword = await bcrypt.hash(password, saltRounds); // Hash the new password
+
+        const userData = await User.findByIdAndUpdate(
+          { _id: tokenData._id },
+          { $set: { password: newPassword, token: '' } },
+          { new: true }
+        );
+        res.status(200).json({ success: true, msg: "User password has been reset" });
+      }
     } else {
-      res.status(200).json({ success: true, msg: "This link has been expired." });
+      res.status(200).json({ success: true, msg: "This link has expired." });
     }
   } catch (error) {
     res.status(400).json({ success: false, msg: error.message });
   }
 }
+
+
 
 
 module.exports = {

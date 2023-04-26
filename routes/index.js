@@ -12,7 +12,7 @@ router.get('/', function (req, res, next) {
   res.send('<a href="/auth/google"> Authenticate using google</a>');
 });
 const jwt = require('jsonwebtoken');
-const maxAge=30*60
+const maxAge=15*60
 
 function generateToken(user) {
   const payload = {
