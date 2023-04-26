@@ -73,7 +73,7 @@ const handleErrorsAdmin = (err) => {
 };
 
 // create json web token
-const maxAge = 30 * 60  //30 minutes with seconds
+const maxAge = 15 * 60  //15 minutes with seconds
 
 //function createToken the encoded data here is the id
 const createToken = (id, role) => {
