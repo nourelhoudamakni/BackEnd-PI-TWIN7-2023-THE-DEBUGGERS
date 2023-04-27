@@ -193,13 +193,18 @@ exports.takeAppointment= async(req,res)=>{
     try{
         const appointment= await Appointment.findById(appointmentId);
         const patient= await user.findById(patientId);
+        const doctor =await Doctor.findOne({Appointments:appointmentId});
         if(!appointment){
             return res.status(404).json({message:"Appointment not found"})
         }  
         appointment.Patient=patientId;
         patient.Appointments.push(appointment._id);
+        doctor.Patients.push(patientId);
+        patient.Doctors.push(doctor._id);
         await appointment.save();
         await patient.save();
+        await doctor.save();
+
         res.json({ message: "Appointment taken successfully", appointment });
     }catch(err){
         res.status(500).json({message:err.message});
