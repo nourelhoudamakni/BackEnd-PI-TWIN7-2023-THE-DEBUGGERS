@@ -13,9 +13,6 @@ const HospitalServiceSchema=new mongoose.Schema({
     EmailService: {
         type:String,
     },
-    TelService:{
-        type:String,
-    },
     file:{
         type:String,
     },
