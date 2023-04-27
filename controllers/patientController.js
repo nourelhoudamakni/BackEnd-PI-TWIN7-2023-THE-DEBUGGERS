@@ -10,12 +10,51 @@ const Appointment = require("../models/Appointment");
 const Patient = require("../models/Patient");
 const Doctor = require("../models/Doctor");
 require('dotenv');
+
+require('dotenv').config();
+const nodemailer = require('nodemailer');
+const _ = require('lodash');
+const speakeasy = require('speakeasy');
+
  var client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+
+
+ //let the pc access less secured websites
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
+// Define a secret key for JWT
+const secretKey = 'mysecretkey';
+const EMAIL_SECRET = 'mysecretemail';
+
+//creating transporter (the sender of the email verification)
+const transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS,
+    },
+});
+
+
 //update patient profile 
 exports.updatePatient=async(req,res)=>{ 
     try{ 
         const patientId=req.params.userId; 
+        const patientBefore=await user.findById(patientId);
+        const emailBefore=patientBefore.email;
+        const emailAfter=req.body.email;
         console.log(patientId);
+
+        if(emailBefore!==emailAfter){
+            // Send email verification link to patient
+            transporter.sendMail({
+               to: emailBefore,
+               subject: 'Email changement',
+               html: `<p>Your email has changed from ${emailBefore} to ${emailAfter}</p>`,
+           });
+           console.log("email sent successfully")
+       }
+
         const updatePatient=await user.findByIdAndUpdate(patientId,req.body)
         res.json(updatePatient);
         
@@ -154,13 +193,18 @@ exports.takeAppointment= async(req,res)=>{
     try{
         const appointment= await Appointment.findById(appointmentId);
         const patient= await user.findById(patientId);
+        const doctor =await Doctor.findOne({Appointments:appointmentId});
         if(!appointment){
             return res.status(404).json({message:"Appointment not found"})
         }  
         appointment.Patient=patientId;
         patient.Appointments.push(appointment._id);
+        doctor.Patients.push(patientId);
+        patient.Doctors.push(doctor._id);
         await appointment.save();
         await patient.save();
+        await doctor.save();
+
         res.json({ message: "Appointment taken successfully", appointment });
     }catch(err){
         res.status(500).json({message:err.message});
