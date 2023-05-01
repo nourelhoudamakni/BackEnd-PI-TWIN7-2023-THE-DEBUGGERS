@@ -38,7 +38,11 @@ const DoctorSchema = new mongoose.Schema({
     Service:{
       type:Schema.Types.ObjectId,
       ref:"HospitalService"
-  }
+  },
+  hospital:{
+    type:Schema.Types.ObjectId,
+    ref:"Hospital"
+}
   });
 
   const Doctor = User.discriminator('Doctor', DoctorSchema);
