@@ -42,6 +42,9 @@ const userSchema=new mongoose.Schema({
     secret:{
         type:String,
         default:'' 
+     },
+     image:{
+    type:String
      }
 
 },{
