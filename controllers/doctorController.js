@@ -240,9 +240,6 @@ exports.getDoctorAppointmentsWithLeastPatients= async (req,res) => {
     const appointments = await Appointment.find({ 'Patient': { $ne: null }, 'HospitalService': serviceId })
       .populate('Doctor')
       .exec();
-      if (appointments.length === 0) {
-        throw new Error('No appointments found with the given serviceId');
-      }
     const doctorCounts = appointments.reduce((acc, appointment) => {
       const doctorId = appointment.Doctor._id.toString();
       if (!acc.hasOwnProperty(doctorId)) {
