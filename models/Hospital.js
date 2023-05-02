@@ -43,6 +43,8 @@ const HospitalSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: "HospitalService"
     }]
+
+    
 });
 
 

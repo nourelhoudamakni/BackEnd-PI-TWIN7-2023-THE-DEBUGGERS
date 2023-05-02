@@ -140,7 +140,7 @@ const signUpFunction = async (req, res) => {
                                         },
                                         EMAIL_SECRET,
                                         {
-                                            expiresIn: '30m',
+                                            expiresIn: '15m',
                                         }
                                     );
                                 } catch (error) {
@@ -416,7 +416,7 @@ const signUpFunction = async (req, res) => {
                     } else {
                         // save User
                         // password handling
-                        const saltRounds = 12;
+                        const saltRounds = 10;
                         bcrypt
                             .hash(password, saltRounds)
                             .then((hashedPasswords) => {
@@ -447,7 +447,7 @@ const signUpFunction = async (req, res) => {
                                         },
                                         EMAIL_SECRET,
                                         {
-                                            expiresIn: '30m',
+                                            expiresIn: '15m',
                                         }
                                     );
                                 } catch (error) {
