@@ -42,6 +42,14 @@ const userSchema=new mongoose.Schema({
     secret:{
         type:String,
         default:'' 
+     },
+     status: {
+      type: String,
+      enum: ['actif', 'blocked', 'archived'],
+      default: 'actif',
+    },
+     image:{
+    type:String
      }
 
 },{

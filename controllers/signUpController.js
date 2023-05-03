@@ -416,7 +416,7 @@ const signUpFunction = async (req, res) => {
                     } else {
                         // save User
                         // password handling
-                        const saltRounds = 12;
+                        const saltRounds = 10;
                         bcrypt
                             .hash(password, saltRounds)
                             .then((hashedPasswords) => {
