@@ -10,7 +10,7 @@ async function validateHospital(req,res,next)
         AdminEmail: yup
           .string()
           .email('you must use email format' )
-          .matches(/^Admin\.[a-zA-Z0-9]+@gmail\.com$/, 'Email address invalid you must have this format Admin+hospitalname(number)+@gmail.com')
+          .matches(/^Admin\.[a-zA-Z0-9]+@gmail\.com$/, 'Email address invalid you must have this format Admin+hospitalname+number+@gmail.com')
           .test('unique','email already exist!', async function(value) {
             if (!value) return true;
             try {
@@ -45,6 +45,7 @@ async function validateHospital(req,res,next)
       
       catch (error) {
         res.status(500).json({ message: error.message, errors: error.errors });
+        console.log(error.message)
       }
       // ou bien je peux utiliser cette forme 
       //catch (error) {
@@ -95,14 +96,6 @@ async function validateHospitalwhenUpdate(req,res,next)
         HospitalAddress:yup.string().required(' Hospital Address  is required'),
         PhoneNumber:yup.number().min(8, 'The phone number must contain at least 8 characters').required(' phone number  is required'),
       
-        PasswordAdmin:yup
-          .string()
-          .min(8, 'The password  must contain at least 8 characters')
-          .matches(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+])(?=.{8,})/,
-            'The password must contain at least one lowercase, one uppercase, one number and one special character'
-          )
-          .required('password is required')
       });
 
     

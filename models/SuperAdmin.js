@@ -10,10 +10,7 @@ const SuperAdminSchema=new mongoose.Schema({
     {
         type: String,
     },
-    ConfirmPasswordSuperAdmin:
-    {
-        type: String,
-    }
+
    
 });
 
