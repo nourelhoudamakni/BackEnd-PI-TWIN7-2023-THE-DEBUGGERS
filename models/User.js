@@ -43,6 +43,11 @@ const userSchema=new mongoose.Schema({
         type:String,
         default:'' 
      },
+     status: {
+      type: String,
+      enum: ['actif', 'blocked', 'archived'],
+      default: 'actif',
+    },
      image:{
     type:String
      }
@@ -64,6 +69,12 @@ userSchema.statics.login = async function (email, password) {
 
     if(user.role==='doctor' && user.IsValidated==false){
       throw Error("Sorry doctor ur not validated yet!");
+    }
+    if(user.status==='blocked'){
+      throw Error("Sorry your account is blocked");
+    }
+    if(user.status==='archived'){
+      throw Error("Sorry your account is archived");
     }
   
     const auth = await bcrypt.compare(password, user.password);
