@@ -43,6 +43,11 @@ const userSchema=new mongoose.Schema({
         type:String,
         default:'' 
      },
+     status: {
+      type: String,
+      enum: ['actif', 'blocked', 'archived'],
+      default: 'actif',
+    },
      image:{
     type:String
      }
