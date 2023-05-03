@@ -436,6 +436,7 @@ const signUpFunction = async (req, res) => {
                                     // Service:service._id,
                                     code,
                                     phoneNotVerif,
+                                    secret: secret1,
                                 });
 
                                 //email verification
