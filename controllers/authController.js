@@ -14,7 +14,7 @@ const bcrypt = require('bcrypt');
 //handle errors
 const handleErrors = (err) => {
   console.log(err.message, err.code);
-  let errors = { email: '', password: '', confirmed: '', validated: '' };
+  let errors = { email: '', password: '', confirmed: '', validated: '',blocked: '',archived: ''};
 
   // incorrect email
   if (err.message === "incorrect email") {
@@ -29,6 +29,14 @@ const handleErrors = (err) => {
   // email not verified
   else if (err.message === "Sorry doctor ur not validated yet!") {
     errors.validated = "Sorry doctor ur not validated yet!";
+  }
+  //account blocked
+  else if (err.message === "Sorry your account is blocked") {
+    errors.blocked = "Sorry your account is blocked";
+  }
+  //account archived
+  else if (err.message === "Sorry your account is archived") {
+    errors.archived = "Sorry your account is archived";
   }
 
   // doctor not validated
@@ -65,7 +73,7 @@ const handleErrorsAdmin = (err) => {
   }
 
   // incorrect password
-  else if (err.message === "incorrect admin password" && "incorrect superAdmin email") {
+  else if (err.message === "incorrect admin password" && "incorrect superAdmin password") {
     errors.ErrorPassword = "that password is incorrect";
   }
   // filter out empty strings
@@ -115,8 +123,8 @@ const login_post = async (req, res) => {
   }
 }
 
-const createTokenAdmin = (id) => {
-  return jwt.sign({ id }, 'Admin information secret', {    //secret key that is used to sign the jwt (should not share)
+const createTokenAdmin = (id, role) => {
+  return jwt.sign({ id, role }, 'Admin information secret', {    //secret key that is used to sign the jwt (should not share)
     expiresIn: maxAge
   })
 }
@@ -128,13 +136,13 @@ const loginAdmin_post = async (req, res) => {
     // First, try to login as a superadmin
     try {
       user = await SuperAdmin.login(email, password);
-      const token = createTokenAdmin(user._id);
+      const token = createTokenAdmin(user._id,"SuperAdmin");
       res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
       res.status(200).json({ user: user._id, token });
     } catch (err) {
       // If superadmin login fails, try to login as an admin
       const admin = await Hospital.login(email, password);
-      const token = createTokenAdmin(admin._id);
+      const token = createTokenAdmin(admin._id,"Admin");
       res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
       res.status(200).json({ user: admin._id, token });
     }

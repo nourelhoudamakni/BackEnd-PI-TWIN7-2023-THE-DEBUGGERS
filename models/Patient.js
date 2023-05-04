@@ -28,6 +28,10 @@ const PatientSchema = new mongoose.Schema({
     type:Schema.Types.ObjectId,
     ref:"Doctor"
   }],
+  prescription:[{
+    type:Schema.Types.ObjectId,
+    ref:"Prescription"
+}]
 
 });
 

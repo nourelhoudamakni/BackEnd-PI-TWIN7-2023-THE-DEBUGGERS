@@ -13,6 +13,9 @@ const HospitalServiceSchema=new mongoose.Schema({
     EmailService: {
         type:String,
     },
+    file:{
+        type:String,
+    },
     Hospital:{
         type:Schema.Types.ObjectId,
         ref:"Hospital"

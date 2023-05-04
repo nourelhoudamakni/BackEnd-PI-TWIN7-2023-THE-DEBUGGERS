@@ -16,6 +16,7 @@ var messageRoute=require('./routes/messageRoute');
 const signUpRouter=require('./routes/signUp');
 var chatRouter=require('./routes/chatRouter')
 var HospitalRouter=require('./routes/Hospital');
+var prescriptionRouter=require('./routes/prescription');
 var serviceRouter = require('./routes/service');
 var adminRouter = require('./routes/adminDash');
 var indexRouter=require('./routes/index');
@@ -80,6 +81,7 @@ app.use('/admin', adminRouter );
 app.use('/appointment',appointmentRouter);
 app.use('/chat',chatRouter)
 app.use('/message',messageRoute)
+app.use('/prescription',prescriptionRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
