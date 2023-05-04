@@ -68,8 +68,7 @@ function(req, res) {
   const token = req.user.token;
   res.cookie('jwt', token, { maxAge: maxAge*1000 });
  
-  res.redirect('http://localhost:3000/');
-  
+  res.redirect('http://localhost:3000/')
   
 });
 
