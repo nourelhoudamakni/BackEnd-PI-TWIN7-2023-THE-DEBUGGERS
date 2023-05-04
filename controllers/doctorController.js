@@ -226,8 +226,9 @@ exports.updateDoctorService=async(req,res)=>{
       return;
     }
     const serviceId = req.params.serviceId;
+    const hospitalId = req.params.hospitalId;
     const updateDoctor = await Doctor.findByIdAndUpdate(doctorId, {
-      $set: { Service: serviceId },
+      $set: { Service: serviceId , hospital:hospitalId},
     }, { new: true });
 
     res.json(updateDoctor);

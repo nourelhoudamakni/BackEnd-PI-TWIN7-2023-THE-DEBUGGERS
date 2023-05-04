@@ -17,13 +17,27 @@ const getDoctorsConfirmedValidated = async (req, res, next) => {
 };
 
 
+const getDoctorsConfirmedValidatedbyIdHspital = async (req, res, next) => {
+  try {
+    const {hospitalId}=req.params
+    // search for all documents where confirmed is true, IsValidated is true, and role is doctor
+    const confirmedValidatedDoctors  = await UserModel.find({  confirmed: true, IsValidated: true , "role": "doctor" ,hospital:hospitalId});
+    console.log(confirmedValidatedDoctors)
+    res.status(200).json(confirmedValidatedDoctors);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 
 
 const getDoctorsConfirmedNonValidated = async (req, res, next) => {
   try {
-   
+    const {hospitalId}=req.params
     // search for all documents where confirmed is true, IsValidated is true, and role is doctor
-    const nonValidatedDoctors  = await DoctorModel.find({  confirmed: true, IsValidated: false , "role": "doctor" });
+    const nonValidatedDoctors  = await DoctorModel.find({  confirmed: true, IsValidated: false , "role": "doctor", hospital:hospitalId});
+
     res.status(200).json(nonValidatedDoctors);
   } catch (err) {
     console.error(err);
@@ -143,4 +157,4 @@ const getDoctorsConfirmedNonValidated = async (req, res, next) => {
         }
       };
       
-module.exports = {getDoctorsConfirmedValidated , getDoctorsConfirmedNonValidated , validateDoctor , getConfirmedPatients , getPatientByName , countPatient , countDoctorValidated} ;
+module.exports = {getDoctorsConfirmedValidated , getDoctorsConfirmedNonValidated , validateDoctor , getConfirmedPatients , getPatientByName , countPatient , countDoctorValidated,getDoctorsConfirmedValidatedbyIdHspital} ;

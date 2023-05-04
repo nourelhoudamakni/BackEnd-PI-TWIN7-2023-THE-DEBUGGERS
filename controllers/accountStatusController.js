@@ -41,8 +41,28 @@ const activateUser = async (req, res) => {
   };
   
 
+  const deleteUser = async (req, res) => {
+    const { userId } = req.params;
+    try {
+    const user = await User.findById(userId);
+      
+    if (!user) {
+        return res.status(404).json({ message: "user not found" });
+    }
+
+    const userdelete = await User.findByIdAndDelete(userId)
+    if (!userdelete) {
+        return res.status(400).json({ message: `user not found with id ${userId}` });
+    }
+    res.status(200).json("User deleted successfully! ")
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+
 module.exports = {
   blockUser,
   archiveUser,
   activateUser,
+  deleteUser
 };
