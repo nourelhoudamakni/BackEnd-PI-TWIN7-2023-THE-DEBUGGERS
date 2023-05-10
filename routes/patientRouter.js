@@ -1,10 +1,13 @@
 const express=require('express'); 
 const router=express.Router(); 
 const patientControlleur =require('../controllers/patientController');
+const EmailReminder =require('../controllers/EmailReminder');
 const {getHospitals} =require('../controllers/patientController');  
 const {getHospitalServicesByHospitalId} =require('../controllers/patientController');  
 const {getAppointmentsByHospitalServicesId} =require('../controllers/patientController');  
 const {takeAppointment} =require('../controllers/patientController');  
+const {sendAppointmentReminders} =require('../controllers/EmailReminder'); 
+const {sendemailForMeet} =require('../controllers/patientController');
 
 
 
@@ -25,5 +28,10 @@ router.delete("/deleteAppointment/:idPatient/:idAppointment",patientControlleur.
 router.get("/notification/:idPatient",patientControlleur.notificationBeforeTheAppointment);
 router.post("/getListDoctor",patientControlleur.getDoctorList);
 router.put("/addImageProfile/:userId",patientControlleur.ProfileImage,patientControlleur.addImageToUserProfile);
+// router.put("/addImageProfile/:userId",patientControlleur.ProfileImage,patientControlleur.addImageToUserProfile);
+router.get('/appointments/:patientId/:appointmentId/confirm', EmailReminder.confirmationApp);
+router.get('/appointments/:patientId/:appointmentId/deny', EmailReminder.denyAppointment);
+router.post('/appointments/:email/:doctor',sendemailForMeet);
+
 
 module.exports = router;
