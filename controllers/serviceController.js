@@ -97,7 +97,7 @@ const updateService = async (req, res, next) => {
     try {
       const { ServiceName, Description, EmailService } = req.body;
       const { serviceId } = req.params;
-  
+      const { hospitalId } = req.params;
       // Remove any whitespace characters from the serviceId parameter value
       const trimmedServiceId = serviceId.trim();
 
@@ -106,17 +106,32 @@ const updateService = async (req, res, next) => {
         throw new Error(`Service with ID ${trimmedServiceId} not found`);
       }
   
-      // check if service name or email already exists, excluding the current service being updated
-      const existingService = await HospitalServiceModel.findOne({
-        $or: [{ ServiceName }, { EmailService }],
-        Hospital: service.Hospital,
-        _id: { $ne: service._id },
-      });
-      if (existingService) {
-        return res
-          .status(400)
-          .json({ message: "Service name or email already exists" });
-      }
+      // // check if service name or email already exists, excluding the current service being updated
+      // const existingService = await HospitalServiceModel.findOne({
+      //   $or: [{ ServiceName }, { EmailService }],
+      //   Hospital: service.Hospital,
+      //   _id: { $ne: service._id },
+      // });
+      // if (existingService) {
+      //   return res
+      //     .status(400)
+      //     .json({ message: "Service name or email already exists" });
+      // }
+
+  if(ServiceName!==service.ServiceName)
+  {
+    const existingServiceByName=await HospitalServiceModel.findOne({ServiceName:ServiceName,Hospital:hospitalId})
+    if(existingServiceByName){
+      throw Error("Service name already exist! ");
+    }
+  }
+  if(EmailService!==service.EmailService){
+    const existingServiceByEmail=await HospitalServiceModel.findOne({EmailService:EmailService,Hospital:hospitalId})
+    if(existingServiceByEmail){
+      throw Error("Email already exist!");
+    }
+  
+  }
 
    // Find the service by ID and update its properties
       const updatedService = await HospitalServiceModel.findByIdAndUpdate(
@@ -134,12 +149,18 @@ const updateService = async (req, res, next) => {
       // Return the updated service object if the update was successful
 
       res.json(updatedService);
-    } catch (error) {
+    } catch (err) {
           // Return an error message if there was a server error
 
-      res.status(500).json(error.message);
+          const errors = handleErrorsADD(err);
+          res.status(400).json({ errors });
+          console.log(errors)
     }
   };
+
+
+
+
   // Delete an existing service
   const deleteService = async (req, res, next) => {
     try {

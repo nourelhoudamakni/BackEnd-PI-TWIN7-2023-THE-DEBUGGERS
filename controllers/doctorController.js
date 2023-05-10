@@ -241,11 +241,11 @@ exports.updateDoctorService=async(req,res)=>{
 exports.getDoctorAppointmentsWithLeastPatients= async (req,res) => {
   try {
     const serviceId=req.params.serviceId;
-
     const appointments1 = await Appointment.find({ HospitalService: serviceId }).populate('Doctor');
     const doctors1 = Array.from(new Set(appointments1.map(appointment => appointment.Doctor)));
     const result = [];
-    for (const doctor of doctors1) {
+    for (let doctor of doctors1) {
+    console.log(doctors1)
       const doctorAppointments1 = appointments1.filter(appointment => appointment.Doctor._id.equals(doctor._id));
       if (doctorAppointments1.every(appointment => !appointment.Patient)) {
         result.push(...doctorAppointments1);

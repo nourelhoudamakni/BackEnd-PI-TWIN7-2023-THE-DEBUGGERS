@@ -22,6 +22,7 @@ var serviceRouter = require('./routes/service');
 var adminRouter = require('./routes/adminDash');
 var indexRouter=require('./routes/index');
 var appointmentRouter=require('./routes/AppointmentRoute');
+var AccountStatusRouter=require('./routes/status')
 const session = require('express-session');
 const cors = require('cors');
 const Chat = require('./models/Chat');
@@ -86,6 +87,8 @@ app.use('/appointment',appointmentRouter);
 app.use('/chat',chatRouter)
 app.use('/message',messageRoute)
 app.use('/prescription',prescriptionRouter)
+app.use('/accountStatus',AccountStatusRouter)
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

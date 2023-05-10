@@ -4,7 +4,7 @@ const {addService , updateService , deleteService , getallServices , countServic
 
 
 router.post("/addservice/:hospitalId", addService);
-router.put("/updateservice/:serviceId", updateService);
+router.put("/updateservice/:serviceId/:hospitalId", updateService);
 router.delete("/deleteservice/:serviceId",deleteService);
 router.get("/getallservices",getallServices);
 router.get("/countservicesinhospital/:hospitalId",countServicesInHospital);
