@@ -131,7 +131,7 @@ socket.on("new message",(newMessageReceived)=>{
   var  Chat=newMessageReceived.chat ; 
   Chat.users.forEach(user=>{
     if (user._id!==newMessageReceived.sender._id) { 
-      console.log("after ")
+      console.log("after")
       socket.in(user._id).emit("message received",newMessageReceived)
     }
   })
