@@ -388,12 +388,12 @@ Appointment.find({ Date: { $gte: tomorrow.toDate(), $lt: moment(tomorrow).endOf(
 }
 
 exports.sendemailForMeet=async(req,res)=>{
-    const {email,doctor}= await req.params;
+    const {email,doctor,id}= await req.params;
     // Send the email
     transporter.sendMail({
         to:email,
         subject: 'Doctor meeting',
-        html: `<p>The doctor, ${doctor} has sent you this link to have a meeting. Please click on this link to join: <a>https://meet.jit.si/${doctor}</a></p>`,
+        html: `<p>The doctor, ${doctor} has sent you this link to have a meeting. Please click on this link to join: <a>https://meet.jit.si/${id}</a></p>`,
       });
 
       console.log(`Appointment reminder sent to ${email}`);
