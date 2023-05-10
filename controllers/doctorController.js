@@ -236,8 +236,22 @@ exports.updateDoctorService=async(req,res)=>{
 
 exports.getDoctorAppointmentsWithLeastPatients= async (req,res) => {
   try {
-    const serviceId=req.params.serviceId; 
-    const appointments = await Appointment.find({ 'Patient': { $eq: null }, 'HospitalService': serviceId })
+    const serviceId=req.params.serviceId;
+
+    const appointments1 = await Appointment.find({ HospitalService: serviceId }).populate('Doctor');
+    const doctors1 = Array.from(new Set(appointments1.map(appointment => appointment.Doctor)));
+    const result = [];
+    for (const doctor of doctors1) {
+      const doctorAppointments1 = appointments1.filter(appointment => appointment.Doctor._id.equals(doctor._id));
+      if (doctorAppointments1.every(appointment => !appointment.Patient)) {
+        result.push(...doctorAppointments1);
+      }
+    }
+    if (result.length > 0 ) {
+        res.status(200).json(result); }
+    else {
+
+    const appointments = await Appointment.find({ 'Patient': { $ne: null }, 'HospitalService': serviceId })
       .populate('Doctor')
       .exec();
     
@@ -263,17 +277,20 @@ exports.getDoctorAppointmentsWithLeastPatients= async (req,res) => {
       }
       i++;
     }
-
+   
+      res.status(200).json(doctorAppointments);
+   
+    
     if (!doctorAppointments) {
       throw new Error('No doctor found with available appointments');
     }
-
-    res.status(200).json(doctorAppointments);
+    }
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Failed to get doctor appointments with least patients.' });
 
   }
+
 }
 
 
