@@ -9,6 +9,7 @@ const HospitalService = require("../models/HospitalService");
 const Appointment = require("../models/Appointment");
 const Patient = require("../models/Patient");
 const Doctor = require("../models/Doctor");
+const multer = require('multer');
 require('dotenv');
 
 require('dotenv').config();
@@ -35,6 +36,43 @@ const transporter = nodemailer.createTransport({
     },
 });
 
+// Upload imageProfile
+const storageProfile = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/userProfile')
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname)
+    }
+
+});
+exports.ProfileImage = multer({ storage: storageProfile }).array('file', 1);
+
+exports.addImageToUserProfile = async (req, res) => {
+    try {
+        const  {userId}= req.params
+        const User = await user.findById(userId);
+        if (!User) {
+            return res.status(404).json({ message: "user not found !" })
+        }
+        
+        if (req.files) {
+            User.image="";
+            req.files.forEach((file) => {
+                User.image=file.originalname;
+            });   
+            User.save();
+            res.status(200).json(User);
+        } 
+        else {
+            res.status(400).json({ message: "No files uploaded" });
+        }
+
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
+
+}
 
 //update patient profile 
 exports.updatePatient = async (req, res) => {
@@ -197,6 +235,7 @@ exports.takeAppointment = async (req, res) => {
     try {
         const appointment = await Appointment.findById(appointmentId);
         const patient = await user.findById(patientId);
+        console.log(patient)
         const doctor = await Doctor.findOne({ Appointments: appointmentId });
         if (!appointment) {
             return res.status(404).json({ message: "Appointment not found" })
