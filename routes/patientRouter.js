@@ -27,10 +27,11 @@ router.get("/sortAppointment",patientControlleur.sortForAppointment);
 router.delete("/deleteAppointment/:idPatient/:idAppointment",patientControlleur.deleteAppointmentFromPatient);
 router.get("/notification/:idPatient",patientControlleur.notificationBeforeTheAppointment);
 router.post("/getListDoctor",patientControlleur.getDoctorList);
+router.put("/addImageProfile/:userId",patientControlleur.ProfileImage,patientControlleur.addImageToUserProfile);
 // router.put("/addImageProfile/:userId",patientControlleur.ProfileImage,patientControlleur.addImageToUserProfile);
 router.get('/appointments/:patientId/:appointmentId/confirm', EmailReminder.confirmationApp);
 router.get('/appointments/:patientId/:appointmentId/deny', EmailReminder.denyAppointment);
-router.post('/appointments/:email/:doctor',sendemailForMeet);
+router.post('/appointments/:email/:doctor/:id',sendemailForMeet);
 
 
 module.exports = router;
