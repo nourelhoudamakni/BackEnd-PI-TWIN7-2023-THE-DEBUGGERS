@@ -22,4 +22,8 @@ router.put("/appointments/:appointmentId/verifie", validateAppointment);
 
 router.get("/getDoctorAppointmentsWithLeastPatients/:serviceId", doctorController.getDoctorAppointmentsWithLeastPatients);
 router.get("/getAvailableAppointments/:serviceId",doctorController.getAvailableAppointments);
+
+router.post("/generate-pdf", doctorController.PdfFile);
+
+
 module.exports = router;
