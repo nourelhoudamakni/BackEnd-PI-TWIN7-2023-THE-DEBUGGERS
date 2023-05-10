@@ -8,7 +8,8 @@ const mongoose=require('mongoose');
 var authRoutes = require('./routes/authRoutes');
 const { requireAuth } = require('./middlewares/authMiddleware');
 require ('dotenv').config();
-const patient =require('./models/Patient');
+const user =require('./models/User');
+const moment = require('moment');
 var medicalRecordRouter=require('./routes/medicalRecord');
 var patientRouter=require('./routes/patientRouter');
 var doctorRouter=require('./routes/doctorRouter');
@@ -24,6 +25,9 @@ var appointmentRouter=require('./routes/AppointmentRoute');
 const session = require('express-session');
 const cors = require('cors');
 const Chat = require('./models/Chat');
+
+const {sendAppointmentReminders} =require('./controllers/EmailReminder'); 
+const cron = require('node-cron');
 
 
 var app = express();
@@ -137,6 +141,16 @@ socket.on("new message",(newMessageReceived)=>{
   })
 })
 })
+
+
+// Schedule the function to run every day at 9am
+cron.schedule('26 15 * * *', () => {
+  console.log('Sending appointment reminders...');
+  sendAppointmentReminders();
+});
+
+
+
 
 
 
