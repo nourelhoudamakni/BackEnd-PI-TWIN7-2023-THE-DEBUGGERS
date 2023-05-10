@@ -21,7 +21,7 @@ const getDoctorsConfirmedValidatedbyIdHspital = async (req, res, next) => {
   try {
     const {hospitalId}=req.params
     // search for all documents where confirmed is true, IsValidated is true, and role is doctor
-    const confirmedValidatedDoctors  = await UserModel.find({  confirmed: true, IsValidated: true , "role": "doctor" ,hospital:hospitalId});
+    const confirmedValidatedDoctors  = await DoctorModel.find({  confirmed: true, IsValidated: true , "role": "doctor" ,hospital:hospitalId});
     console.log(confirmedValidatedDoctors)
     res.status(200).json(confirmedValidatedDoctors);
   } catch (err) {
@@ -44,6 +44,10 @@ const getDoctorsConfirmedNonValidated = async (req, res, next) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+
+
+
 
 // This function gets all confirmed but non-validated doctors
 // const getDoctorsConfirmedNonValidated = async (req, res, next) => {
