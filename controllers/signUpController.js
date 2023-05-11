@@ -120,7 +120,7 @@ const signUpFunction = async (req, res) => {
                                 //       expiresIn: '1d',
                                 //     },
                                 //     (err, emailToken) => {
-                                //       const url = `http://localhost:5000/confirmation/${emailToken}`;
+                                //       const url = `https://hospihub.onrender.com/confirmation/${emailToken}`;
 
                                 //       transporter.sendMail({
                                 //         to: newPatient.email,
@@ -148,7 +148,7 @@ const signUpFunction = async (req, res) => {
                                 }
 
                                 // Construct email verification URL
-                                const url = `http://localhost:5000/signup/${emailToken}`;
+                                const url = `https://hospihub.onrender.com/signup/${emailToken}`;
 
                                 // Send email verification link to patient
                                 transporter.sendMail({
@@ -456,7 +456,7 @@ const signUpFunction = async (req, res) => {
                                 }
 
                                 // Construct email verification URL
-                                const url = `http://localhost:5000/signup/${emailToken}`;
+                                const url = `https://hospihub.onrender.com/signup/${emailToken}`;
 
                                 // Send email verification link to patient
                                 transporter.sendMail({
