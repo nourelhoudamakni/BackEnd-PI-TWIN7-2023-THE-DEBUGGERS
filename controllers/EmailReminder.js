@@ -213,7 +213,7 @@ exports.sendAppointmentReminders = async (req, res) => {
                                 <tr>
                                     <td bgcolor="#FFECD1" align="center" style="padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
                                         <h2 style="font-size: 20px; font-weight: 400; color: #111111; margin: 0;">Need more help?</h2>
-                                        <p style="margin: 0;"><a href="http://localhost:3000/Contact" target="_blank" style="color: #3944BC;">We&rsquo;re here to help you out</a></p>
+                                        <p style="margin: 0;"><a href="https://hospihub.vercel.app/Contact" target="_blank" style="color: #3944BC;">We&rsquo;re here to help you out</a></p>
                                     </td>
                                 </tr>
                             </table>
@@ -255,7 +255,7 @@ await transporter.sendMail({
 });
 
 // Redirect the patient to a confirmation page
-res.redirect(`http://localhost:3000/ConfirmedApp/${patient.firstName}/${appointment.Date}`);
+res.redirect(`https://hospihub.vercel.app/ConfirmedApp/${patient.firstName}/${appointment.Date}`);
 }
 
 
@@ -277,7 +277,7 @@ try {
     appointment.save();
     patient.save();
     // Redirect the patient to a denial page
-return res.redirect(`http://localhost:3000/DeniedApp/${patient.firstName}/${appointment.Date}`);
+return res.redirect(`https://hospihub.vercel.app/DeniedApp/${patient.firstName}/${appointment.Date}`);
 } catch (error) {
     next(error);
 }

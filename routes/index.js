@@ -62,13 +62,13 @@ router.get('/auth/google',
 
 // Callback route after successful authentication
 router.get('/auth/google/callback',
-passport.authenticate('google', { failureRedirect: 'http://localhost:3000/ErrorSignInPage' }),
+passport.authenticate('google', { failureRedirect: 'https://hospihub.vercel.app/ErrorSignInPage' }),
 function(req, res) {
   // Successful authentication, redirect to profile page
   const token = req.user.token;
   res.cookie('jwt', token, { maxAge: maxAge*1000 });
  
-  res.redirect('http://localhost:3000/')
+  res.redirect('https://hospihub.vercel.app/')
   
 });
 
@@ -83,7 +83,7 @@ passport.deserializeUser((user, done) => {
 
 app.post('/homeReload', (req, res) => {
   // Your server-side code here
-  res.redirect('http://localhost:3000/');
+  res.redirect('https://hospihub.vercel.app/');
 });
 
 module.exports = router;

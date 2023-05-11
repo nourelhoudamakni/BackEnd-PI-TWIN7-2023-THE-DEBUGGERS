@@ -55,7 +55,7 @@ router.get('/:token', async (req, res) => {
 
   
       // Redirect to home page
-      res.redirect('http://localhost:3000/signIn')
+      res.redirect('https://hospihub.vercel.app/signIn')
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Internal server error' });
